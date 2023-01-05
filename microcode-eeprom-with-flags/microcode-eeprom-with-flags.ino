@@ -10,22 +10,22 @@
 #define EEPROM_D7 12
 #define WRITE_EN 13
 
-#define HLT 0b1000000000000000  // Halt clock
-#define MI  0b0100000000000000  // Memory address register in
-#define RI  0b0010000000000000  // RAM data in
-#define RO  0b0001000000000000  // RAM data out
-#define IO  0b0000100000000000  // Instruction register out
-#define II  0b0000010000000000  // Instruction register in
-#define AI  0b0000001000000000  // A register in
-#define AO  0b0000000100000000  // A register out
-#define EO  0b0000000010000000  // ALU out
-#define SU  0b0000000001000000  // ALU subtract
-#define BI  0b0000000000100000  // B register in
-#define OI  0b0000000000010000  // Output register in
-#define CE  0b0000000000001000  // Program counter enable
-#define CO  0b0000000000000100  // Program counter out
-#define J   0b0000000000000010  // Jump (program counter in)
-#define FI  0b0000000000000001  // Flags in
+#define HLT 0b100000000000000000000000  // Halt clock
+#define MI  0b010000000000000000000000  // Memory address register in
+#define RI  0b001000000000000000000000  // RAM data in
+#define RO  0b000100000000000000000000  // RAM data out
+#define TR  0b000010000000000000000000  // T-state reset
+#define II  0b000001000000000000000000  // Instruction register in
+#define AI  0b000000100000000000000000  // A register in
+#define AO  0b000000010000000000000000  // A register out
+#define EO  0b000000001000000000000000  // ALU out
+#define SU  0b000000000100000000000000  // ALU subtract
+#define BI  0b000000000010000000000000  // B register in
+#define OI  0b000000000001000000000000  // Output register in
+#define CE  0b000000000000100000000000  // Program counter enable
+#define CO  0b000000000000010000000000  // Program counter out
+#define J   0b000000000000001000000000  // Jump (program counter in)
+#define FI  0b000000000000000100000000  // Flags in
 
 #define FLAGS_Z0C0 0
 #define FLAGS_Z0C1 1
@@ -36,22 +36,22 @@
 #define JZ  0b1000
 
 uint16_t UCODE_TEMPLATE[16][8] = {
-  { MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 },   // 0000 - NOP
-  { MI|CO,  RO|II|CE,  IO|MI,  RO|AI,  0,           0, 0, 0 },   // 0001 - LDA
-  { MI|CO,  RO|II|CE,  IO|MI,  RO|BI,  EO|AI|FI,    0, 0, 0 },   // 0010 - ADD
-  { MI|CO,  RO|II|CE,  IO|MI,  RO|BI,  EO|AI|SU|FI, 0, 0, 0 },   // 0011 - SUB
-  { MI|CO,  RO|II|CE,  IO|MI,  AO|RI,  0,           0, 0, 0 },   // 0100 - STA
-  { MI|CO,  RO|II|CE,  IO|AI,  0,      0,           0, 0, 0 },   // 0101 - LDI
-  { MI|CO,  RO|II|CE,  IO|J,   0,      0,           0, 0, 0 },   // 0110 - JMP
-  { MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 },   // 0111 - JC
-  { MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 },   // 1000 - JZ
-  { MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 },   // 1001
-  { MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 },   // 1010
-  { MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 },   // 1011
-  { MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 },   // 1100
-  { MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 },   // 1101
-  { MI|CO,  RO|II|CE,  AO|OI,  0,      0,           0, 0, 0 },   // 1110 - OUT
-  { MI|CO,  RO|II|CE,  HLT,    0,      0,           0, 0, 0 },   // 1111 - HLT
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00000 - NOP
+  { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE,  RO|AI,  TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00001 - LDA
+  { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE,  RO|BI,  EO|AI|FI,     TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00010 - ADD
+  { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE,  RO|BI,  EO|AI|SU|FI,  TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00011 - SUB
+  { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE,  AO|RI,  TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00100 - STA
+  { CO|MI,  RO|II|CE,  CO|MI,  RO|AI|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00101 - LDI
+  { CO|MI,  RO|II|CE,  CO|MI,  RO|J,      TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00110 - JMP
+  { CO|MI,  RO|II|CE,  CO|MI,  RO|JC|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00111 - JC
+  { CO|MI,  RO|II|CE,  CO|MI,  RO|JZ|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01000 - JZ
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01001 - NOP
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01010 - NOP
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01011 - NOP
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01100 - NOP
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01101 - NOP
+  { CO|MI,  RO|II|CE,  AO|OI,  TR,        0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01110 - OUT
+  { CO|MI,  RO|II|CE,  HLT,    0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01111 - HLT
 };
 
 uint16_t ucode[4][16][8];
