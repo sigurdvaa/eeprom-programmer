@@ -10,33 +10,29 @@
 #define EEPROM_D7 12
 #define WRITE_EN 13
 
-#define HLT 0b100000000000000000000000  // Halt clock
-#define MI  0b010000000000000000000000  // Memory address register in
-#define RI  0b001000000000000000000000  // RAM data in
-#define RO  0b000100000000000000000000  // RAM data out
-#define TR  0b000010000000000000000000  // T-state reset
-#define II  0b000001000000000000000000  // Instruction register in
-#define AI  0b000000100000000000000000  // A register in
-#define AO  0b000000010000000000000000  // A register out
-#define EO  0b000000001000000000000000  // ALU out
-#define SU  0b000000000100000000000000  // ALU subtract
-#define BI  0b000000000010000000000000  // B register in
-#define OI  0b000000000001000000000000  // Output register in
-#define CE  0b000000000000100000000000  // Program counter enable
-#define CO  0b000000000000010000000000  // Program counter out
-#define J   0b000000000000001000000000  // Jump (program counter in)
-#define FI  0b000000000000000100000000  // Flags in
+#define HLT 0b10000000000000000000000000000000  // Halt clock
+#define MI  0b01000000000000000000000000000000  // Memory address register in
+#define RI  0b00100000000000000000000000000000  // RAM data in
+#define RO  0b00010000000000000000000000000000  // RAM data out
+#define TR  0b00001000000000000000000000000000  // T-state reset
+#define II  0b00000100000000000000000000000000  // Instruction register in
+#define AI  0b00000010000000000000000000000000  // A register in
+#define AO  0b00000001000000000000000000000000  // A register out
+#define EO  0b00000000100000000000000000000000  // ALU out
+#define SU  0b00000000010000000000000000000000  // ALU subtract
+#define BI  0b00000000001000000000000000000000  // B register in
+#define OI  0b00000000000100000000000000000000  // Output register in
+#define CE  0b00000000000010000000000000000000  // Program counter enable
+#define CO  0b00000000000001000000000000000000  // Program counter out
+#define J   0b00000000000000100000000000000000  // Jump (program counter in)
+#define FI  0b00000000000000010000000000000000  // Flags in
+#define JC  0b00000000000000001000000000000000  // JC
+#define JZ  0b00000000000000000100000000000000  // JZ
+#define BI  0b00000000000000000010000000000000  // B register out
 
-#define FLAGS_Z0C0 0
-#define FLAGS_Z0C1 1
-#define FLAGS_Z1C0 2
-#define FLAGS_Z1C1 3
 
-#define JC  0b0111
-#define JZ  0b1000
-
-uint16_t UCODE_TEMPLATE[16][8] = {
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00000 - NOP
+const PROGMEM uint32_t ucode[32][16] = {
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00000 - (NOP)
   { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE,  RO|AI,  TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00001 - LDA
   { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE,  RO|BI,  EO|AI|FI,     TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00010 - ADD
   { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE,  RO|BI,  EO|AI|SU|FI,  TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00011 - SUB
@@ -45,34 +41,31 @@ uint16_t UCODE_TEMPLATE[16][8] = {
   { CO|MI,  RO|II|CE,  CO|MI,  RO|J,      TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00110 - JMP
   { CO|MI,  RO|II|CE,  CO|MI,  RO|JC|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00111 - JC
   { CO|MI,  RO|II|CE,  CO|MI,  RO|JZ|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01000 - JZ
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01001 - NOP
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01010 - NOP
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01011 - NOP
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01100 - NOP
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01101 - NOP
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01001 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01010 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01011 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01100 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01101 - (NOP)
   { CO|MI,  RO|II|CE,  AO|OI,  TR,        0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01110 - OUT
   { CO|MI,  RO|II|CE,  HLT,    0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01111 - HLT
+  
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10000 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10001 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10010 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10011 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10100 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10101 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10110 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10111 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11000 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11001 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11010 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11011 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11100 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11101 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11110 - (NOP)
+  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11111 - (NOP)
 };
-
-uint16_t ucode[4][16][8];
-
-void initUCode() {
-  // ZF = 0, CF = 0
-  memcpy(ucode[FLAGS_Z0C0], UCODE_TEMPLATE, sizeof(UCODE_TEMPLATE));
-
-  // ZF = 0, CF = 1
-  memcpy(ucode[FLAGS_Z0C1], UCODE_TEMPLATE, sizeof(UCODE_TEMPLATE));
-  ucode[FLAGS_Z0C1][JC][2] = IO|J;
-
-  // ZF = 1, CF = 0
-  memcpy(ucode[FLAGS_Z1C0], UCODE_TEMPLATE, sizeof(UCODE_TEMPLATE));
-  ucode[FLAGS_Z1C0][JZ][2] = IO|J;
-
-  // ZF = 1, CF = 1
-  memcpy(ucode[FLAGS_Z1C1], UCODE_TEMPLATE, sizeof(UCODE_TEMPLATE));
-  ucode[FLAGS_Z1C1][JC][2] = IO|J;
-  ucode[FLAGS_Z1C1][JZ][2] = IO|J;
-}
 
 /*
  * Output the address bits and outputEnable signal using shift registers.
@@ -146,8 +139,6 @@ void printContents(int start, int length) {
 
 void setup() {
   // put your setup code here, to run once:
-  initUCode();
-
   pinMode(SHIFT_DATA, OUTPUT);
   pinMode(SHIFT_CLK, OUTPUT);
   pinMode(SHIFT_LATCH, OUTPUT);
@@ -158,17 +149,19 @@ void setup() {
   // Program data bytes
   Serial.print("Programming EEPROM");
 
-  // Program the 8 high-order bits of microcode into the first 128 bytes of EEPROM
-  for (int address = 0; address < 1024; address += 1) {
-    int flags       = (address & 0b1100000000) >> 8;
-    int byte_sel    = (address & 0b0010000000) >> 7;
-    int instruction = (address & 0b0001111000) >> 3;
-    int step        = (address & 0b0000000111);
+  // Program the 8 high-order bits of microcode into the first 512 bytes of EEPROM
+  for (int address = 0; address < 2048; address += 1) {
+    int byte_select_2 = (address & 0b10000000000) >> 10;
+    int byte_select_1 = (address & 0b01000000000) >> 9;
+    int instruction   = (address & 0b00111110000) >> 4;
+    int step          = (address & 0b00000001111);
 
-    if (byte_sel) {
-      writeEEPROM(address, ucode[flags][instruction][step]);
+    if (byte_select_2) {
+      writeEEPROM(address, ucode[instruction][step] >> 8);
+    } else if (byte_select_1) { 
+      writeEEPROM(address, ucode[instruction][step] >> 16);
     } else {
-      writeEEPROM(address, ucode[flags][instruction][step] >> 8);
+      writeEEPROM(address, ucode[instruction][step] >> 24);
     }
 
     if (address % 64 == 0) {
@@ -181,7 +174,7 @@ void setup() {
 
   // Read and print out the contents of the EERPROM
   Serial.println("Reading EEPROM");
-  printContents(0, 1024);
+  printContents(0, 2048);
 }
 
 
