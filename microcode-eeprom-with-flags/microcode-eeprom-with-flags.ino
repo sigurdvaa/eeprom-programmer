@@ -28,43 +28,47 @@
 #define FI  0b00000000000000010000000000000000  // Flags in
 #define JC  0b00000000000000001000000000000000  // JC
 #define JZ  0b00000000000000000100000000000000  // JZ
-#define BI  0b00000000000000000010000000000000  // B register out
+#define BO  0b00000000000000000010000000000000  // B register out
 
 
-const PROGMEM uint32_t ucode[32][16] = {
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00000 - (NOP)
-  { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE,  RO|AI,  TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00001 - LDA
-  { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE,  RO|BI,  EO|AI|FI,     TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00010 - ADD
-  { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE,  RO|BI,  EO|AI|SU|FI,  TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00011 - SUB
-  { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE,  AO|RI,  TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00100 - STA
-  { CO|MI,  RO|II|CE,  CO|MI,  RO|AI|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00101 - LDI
-  { CO|MI,  RO|II|CE,  CO|MI,  RO|J,      TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00110 - JMP
-  { CO|MI,  RO|II|CE,  CO|MI,  RO|JC|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00111 - JC
-  { CO|MI,  RO|II|CE,  CO|MI,  RO|JZ|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01000 - JZ
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01001 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01010 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01011 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01100 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01101 - (NOP)
-  { CO|MI,  RO|II|CE,  AO|OI,  TR,        0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01110 - OUT
-  { CO|MI,  RO|II|CE,  HLT,    0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01111 - HLT
+const uint32_t FETCH_PC = CO|MI;
+const uint32_t FETCH_INS = RO|II|CE;
+const uint32_t FETCH_ADDR = CO|MI;
 
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10000 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10001 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10010 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10011 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10100 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10101 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10110 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10111 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11000 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11001 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11010 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11011 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11100 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11101 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11110 - (NOP)
-  { CO|MI,  RO|II|CE,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11111 - (NOP)
+const static uint32_t ucode[32][16] PROGMEM = {
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00000 - (NOP)
+  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|AI,  TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00001 - LDA
+  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|BI,  EO|AI|FI,     TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00010 - ADD
+  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|BI,  EO|AI|SU|FI,  TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00011 - SUB
+  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  AO|RI,  TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00100 - STA
+  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|AI|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00101 - LDI
+  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|J,      TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00110 - JMP
+  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|JC|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00111 - JC
+  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|JZ|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01000 - JZ
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01001 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01010 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01011 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01100 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01101 - (NOP)
+  { FETCH_PC,  FETCH_INS,  AO|OI,       TR,        0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01110 - OUT
+  { FETCH_PC,  FETCH_INS,  HLT,         0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01111 - HLT
+
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10000 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10001 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10010 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10011 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10100 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10101 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10110 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10111 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11000 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11001 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11010 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11011 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11100 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11101 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11110 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11111 - (NOP)
 };
 
 /*
@@ -128,7 +132,7 @@ void printContents(int start, int length) {
     }
 
     char buf[80];
-    sprintf(buf, "%03x:  %02x %02x %02x %02x %02x %02x %02x %02x   %02x %02x %02x %02x %02x %02x %02x %02x",
+    sprintf(buf, "%04x:  %02x %02x %02x %02x %02x %02x %02x %02x   %02x %02x %02x %02x %02x %02x %02x %02x",
             base, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
             data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15]);
 
@@ -149,19 +153,19 @@ void setup() {
   // Program data bytes
   Serial.print("Programming EEPROM");
 
-  // Program the 8 high-order bits of microcode into the first 512 bytes of EEPROM
+  // Program the 8 high-order bits of microcode into the first 2048 bytes of EEPROM
   for (int address = 0; address < 2048; address += 1) {
-    int byte_select_2 = (address & 0b10000000000) >> 10;
-    int byte_select_1 = (address & 0b01000000000) >> 9;
-    int instruction   = (address & 0b00111110000) >> 4;
-    int step          = (address & 0b00000001111);
+    int bit_select_3 = (address & 0b10000000000) >> 10;
+    int bit_select_2 = (address & 0b01000000000) >> 9;
+    int instruction  = (address & 0b00111110000) >> 4;
+    int step         = (address & 0b00000001111);
 
-    if (byte_select_2) {
-      writeEEPROM(address, ucode[instruction][step] >> 8);
-    } else if (byte_select_1) { 
-      writeEEPROM(address, ucode[instruction][step] >> 16);
+    if (bit_select_3) {
+      writeEEPROM(address, pgm_read_dword(&ucode[instruction][step]) >> 8);
+    } else if (bit_select_2) {
+      writeEEPROM(address, pgm_read_dword(&ucode[instruction][step]) >> 16);
     } else {
-      writeEEPROM(address, ucode[instruction][step] >> 24);
+      writeEEPROM(address, pgm_read_dword(&ucode[instruction][step]) >> 24);
     }
 
     if (address % 64 == 0) {
