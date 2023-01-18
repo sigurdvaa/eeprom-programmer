@@ -53,22 +53,22 @@ const static uint32_t ucode[32][16] PROGMEM = {
   { FETCH_PC,  FETCH_INS,  AO|OI,       TR,        0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01110 - OUT
   { FETCH_PC,  FETCH_INS,  HLT,         0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01111 - HLT
 
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10000 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10001 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10010 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10011 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10100 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10101 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10110 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10111 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11000 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11001 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11010 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11011 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11100 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11101 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11110 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,     0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11111 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10000 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10001 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10010 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10011 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10100 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10101 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10110 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10111 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11000 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11001 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11010 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11011 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11100 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11101 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11110 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11111 - (NOP)
 };
 
 /*
