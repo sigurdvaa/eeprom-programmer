@@ -33,9 +33,9 @@
 #define LO  0b00000000000000000000100000000000  // Bootloader data out
 
 
-const uint32_t FETCH_PC = CO|MI;
-const uint32_t FETCH_INS = RO|II|CE;
-const uint32_t FETCH_ADDR = CO|MI;
+const static uint32_t FETCH_PC = CO|MI;
+const static uint32_t FETCH_INS = RO|II|CE;
+const static uint32_t FETCH_ADDR = CO|MI;
 
 const static uint32_t ucode[32][16] PROGMEM = {
   { CO|LI|MI,  LO|RI|CE,   FI,          CO|II,     TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00000 - BOOT
