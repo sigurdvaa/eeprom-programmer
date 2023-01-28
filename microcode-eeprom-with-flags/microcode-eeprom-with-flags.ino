@@ -38,7 +38,7 @@ const uint32_t FETCH_INS = RO|II|CE;
 const uint32_t FETCH_ADDR = CO|MI;
 
 const static uint32_t ucode[32][16] PROGMEM = {
-  { CO|LI|MI,  LO|RI|CE,   TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00000 - BOOT
+  { CO|LI|MI,  LO|RI|CE,   FI,          CO|II,     TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00000 - BOOT
   { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|AI,  TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00001 - LDA
   { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|BI,  EO|AI|FI,     TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00010 - ADD
   { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|BI,  EO|AI|SU|FI,  TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00011 - SUB
@@ -70,7 +70,8 @@ const static uint32_t ucode[32][16] PROGMEM = {
   { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11100 - (NOP)
   { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11101 - (NOP)
   { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11110 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11111 - (NOP)
+  { FETCH_PC,  FETCH_INS,  TR,          0,         CE,     TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11111 - RUN
+
 };
 
 
@@ -120,7 +121,7 @@ void writeEEPROM(int address, byte data) {
   digitalWrite(WRITE_EN, LOW);
   delayMicroseconds(1);
   digitalWrite(WRITE_EN, HIGH);
-  delay(10);
+  delay(5);
 }
 
 
