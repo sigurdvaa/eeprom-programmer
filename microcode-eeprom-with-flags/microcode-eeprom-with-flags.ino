@@ -31,6 +31,7 @@
 #define BO  0b00000000000000000010000000000000  // B register out
 #define LI  0b00000000000000000001000000000000  // Bootloader address register in
 #define LO  0b00000000000000000000100000000000  // Bootloader data out
+#define RUN 0b00000000000000000000010000000000  // Bootloader done
 
 
 const static uint32_t FETCH_PC = CO|MI;
@@ -38,7 +39,7 @@ const static uint32_t FETCH_INS = RO|II|CE;
 const static uint32_t FETCH_ADDR = CO|MI;
 
 const static uint32_t ucode[32][16] PROGMEM = {
-  { CO|LI|MI,  LO|RI|CE,   FI,          CO|II,     TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00000 - BOOT
+  { CO|LI|MI,  LO|RI|CE,   CO|II|RUN,   TR,        0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00000 - BOOT
   { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|AI,  TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00001 - LDA
   { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|BI,  EO|AI|FI,     TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00010 - ADD
   { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|BI,  EO|AI|SU|FI,  TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00011 - SUB
