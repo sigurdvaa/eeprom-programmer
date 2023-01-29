@@ -31,7 +31,6 @@
 #define BO  0b00000000000000000010000000000000  // B register out
 #define LI  0b00000000000000000001000000000000  // Bootloader address register in
 #define LO  0b00000000000000000000100000000000  // Bootloader data out
-#define RUN 0b00000000000000000000010000000000  // Bootloader done
 
 
 const static uint32_t FETCH_PC = CO|MI;
@@ -39,42 +38,39 @@ const static uint32_t FETCH_INS = RO|II|CE;
 const static uint32_t FETCH_ADDR = CO|MI;
 
 const static uint32_t ucode[32][16] PROGMEM = {
-  { CO|LI|MI,  LO|RI|CE,   CO|II|RUN,   TR,        0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00000 - BOOT
-  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|AI,  TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00001 - LDA
-  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|BI,  EO|AI|FI,     TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00010 - ADD
-  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  RO|BI,  EO|AI|SU|FI,  TR, 0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00011 - SUB
-  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|MI|CE,  AO|RI,  TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00100 - STA
-  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|AI|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00101 - LDI
-  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|J,      TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00110 - JMP
-  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|JC|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 00111 - JC
-  { FETCH_PC,  FETCH_INS,  FETCH_ADDR,  RO|JZ|CE,  TR,     0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01000 - JZ
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01001 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01010 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01011 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01100 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01101 - (NOP)
-  { FETCH_PC,  FETCH_INS,  AO|OI,       TR,        0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01110 - OUT
-  { FETCH_PC,  FETCH_INS,  HLT,         0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 01111 - HLT
-
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10000 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10001 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10010 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10011 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10100 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10101 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10110 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 10111 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11000 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11001 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11010 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11011 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11100 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11101 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         0,      0,            0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11110 - (NOP)
-  { FETCH_PC,  FETCH_INS,  TR,          0,         CE,     TR,           0,  0, 0, 0, 0, 0, 0, 0, 0, 0 },   // 11111 - RUN
-
+  { CO|LI|MI|OI,  LO|RI,      CO|II,        CE,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00000 - BOOT
+  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|MI|CE,  RO|AI,  TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00001 - LDA
+  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|MI|CE,  RO|BI,  EO|AI|FI,     TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00010 - ADD
+  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|MI|CE,  RO|BI,  EO|AI|SU|FI,  TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00011 - SUB
+  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|MI|CE,  AO|RI,  TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00100 - STA
+  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|AI|CE,  TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00101 - LDI
+  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|J,      TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00110 - JMP
+  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|JC|CE,  TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00111 - JC
+  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|JZ|CE,  TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01000 - JZ
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01001 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01010 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01011 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01100 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01101 - (NOP)
+  { FETCH_PC,     FETCH_INS,  AO|OI,        TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01110 - OUT
+  { FETCH_PC,     FETCH_INS,  HLT,          TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01111 - HLT
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10000 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10001 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10010 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10011 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10100 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10101 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10110 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10111 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11000 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11001 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11010 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11011 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11100 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11101 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11110 - (NOP)
+  { FETCH_PC,     FETCH_INS,  TR,           CE,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11111 - RUN
 };
-
 
 /*
  * Output the address bits and outputEnable signal using shift registers.
@@ -122,7 +118,7 @@ void writeEEPROM(int address, byte data) {
   digitalWrite(WRITE_EN, LOW);
   delayMicroseconds(1);
   digitalWrite(WRITE_EN, HIGH);
-  delay(5);
+  delay(10);
 }
 
 
