@@ -9,6 +9,7 @@
 #define EEPROM_D0   5
 #define EEPROM_D7   12
 #define WRITE_EN    13
+#define EEPROM_SIZE 2048
 
 #define BOOT 00
 #define LDA  01
@@ -129,8 +130,8 @@ void setup() {
   // Program data bytes
   Serial.print("Programming EEPROM");
 
-  // Program the 8 programs into the EEPROM
-  for (int address = 0; address < 2048; address += 1) {
+  // Write the programs into the EEPROM
+  for (int address = 0; address < EEPROM_SIZE; address += 1) {
     int index = address >> 8;
 
     writeEEPROM(address, pgm_read_dword(&programs[index][address]));
@@ -144,7 +145,7 @@ void setup() {
 
   // Read and print out the contents of the EERPROM
   Serial.println("Reading EEPROM");
-  printContents(0, 2048);
+  printContents(0, EEPROM_SIZE);
 }
 
 
