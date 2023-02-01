@@ -10,6 +10,8 @@
 #define EEPROM_D7   12
 #define WRITE_EN    13
 #define EEPROM_SIZE 2048
+#define RAM_SIZE    256
+
 
 #define BOOT 00
 #define LDA  01
@@ -27,16 +29,16 @@
 #define NOP  30
 #define RUN  31
 
-const static uint8_t programs[8][256] PROGMEM = {
-  { 
-    LDA, 128,
-    ADD, 129,
-    STA, 128,
-    OUT,
-    JMP, 0
 
-    [128] = 0,
-    [129] = 1,
+const static uint8_t programs[EEPROM_SIZE/RAM_SIZE][RAM_SIZE] PROGMEM = {
+  { 
+    LDA, 9,
+    ADD, 10,
+    STA, 9,
+    OUT,
+    JMP, 0,
+    0, //  9 
+    1, // 10
   },
   {  },
   {  },
@@ -132,9 +134,10 @@ void setup() {
 
   // Write the programs into the EEPROM
   for (int address = 0; address < EEPROM_SIZE; address += 1) {
-    int index = address >> 8;
+    int program = address >> 8;
+    int instruction = address & 0b11111111;
 
-    writeEEPROM(address, pgm_read_dword(&programs[index][address]));
+    writeEEPROM(address, pgm_read_byte(&programs[program][instruction]));
 
     if (address % 64 == 0) {
       Serial.print(".");
