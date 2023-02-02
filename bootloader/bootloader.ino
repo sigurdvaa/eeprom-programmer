@@ -3,58 +3,65 @@
  * It includes support for a flags register with carry and zero flags
  * See this video for more: https://youtu.be/Zg1NdPKoosU
  */
-#define SHIFT_DATA 2
-#define SHIFT_CLK 3
+#define SHIFT_DATA  2
+#define SHIFT_CLK   3
 #define SHIFT_LATCH 4
-#define EEPROM_D0 5
-#define EEPROM_D7 12
-#define WRITE_EN 13
+#define EEPROM_D0   5
+#define EEPROM_D7   12
+#define WRITE_EN    13
 #define EEPROM_SIZE 2048
-#define RAM_SIZE 256
+#define RAM_SIZE    256
 
-
-#define BOOT 0
-#define LDA 1
-#define ADD 2
-#define SUB 3
-#define STA 4
-#define LDI 5
-#define JMP 6
-#define JC 7
-#define JZ 8
-
-#define OUT 14
-#define HLT 15
-
-#define NOP 30
-#define RUN 31
+enum ins {
+  BOOT,
+  LDA,
+  LDB,
+  LDIA,
+  LDIB,
+  LDPA,
+  LDPB,
+  STA,
+  STB,
+  ADD,
+  SUB,
+  ADDI,
+  SUBI,
+  CMP,
+  JMP,
+  JMPC,
+  JMPZ,
+  OUTA,
+  OUTB,
+  HLT,
+  NOP = 30,
+  RUN = 31,
+}
 
 
 const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
   {
     LDA, 9,
-    ADD, 10,
+    ADDI, 1,
     STA, 9,
-    OUT,
+    OUTA,
     JMP, 0,
     0,  //  9
-    1,  // 10
   },
   {
-    LDP, 25, // address
-    OUT,
-    SUB, 25, // address
-    JZ, 7,
+    LDPA, 24, // addr ptr
+    OUTA,
+    SUB, 24, // addr ptr
+    JMPZ, 7,
     HLT,
-    LDA, 25, // address
-    ADI, 1,
+    LDA, 24, // addr ptr
+    ADDI, 1,
     JC, 18, // jump to reset if address overflow
-    STA, 25, // address
+    STA, 24, // address
     JMP, 0, 
-    LDI, 24, // reset address to end of program
-    STA, 25, // address
+    LDIA, 25, // reset address to end of program
+    STA, 24, // address
     JMP, 0,
-    25, // address
+    25, // addr ptr
     25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
     40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
     60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,

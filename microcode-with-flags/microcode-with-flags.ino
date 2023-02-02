@@ -3,12 +3,14 @@
  * It includes support for a flags register with carry and zero flags
  * See this video for more: https://youtu.be/Zg1NdPKoosU
  */
-#define SHIFT_DATA 2
-#define SHIFT_CLK 3
+#define SHIFT_DATA  2
+#define SHIFT_CLK   3
 #define SHIFT_LATCH 4
-#define EEPROM_D0 5
-#define EEPROM_D7 12
-#define WRITE_EN 13
+#define EEPROM_D0   5
+#define EEPROM_D7   12
+#define WRITE_EN    13
+#define EEPROM_SIZE 2048
+#define RAM_SIZE    256
 
 #define HLT 0b10000000000000000000000000000000  // Halt clock
 #define MI  0b01000000000000000000000000000000  // Memory address register in
@@ -33,43 +35,43 @@
 #define LO  0b00000000000000000000100000000000  // Bootloader data out
 
 
-const static uint32_t FETCH_PC = CO|MI;
-const static uint32_t FETCH_INS = RO|II|CE;
-const static uint32_t FETCH_ADDR = CO|MI;
+const static uint32_t GET_PC = CO|MI;
+const static uint32_t GET_INS = RO|II|CE;
+const static uint32_t GET_ADDR = CO|MI;
 
 const static uint32_t ucode[32][16] PROGMEM = {
-  { CO|LI|MI|OI,  LO|RI,      CO|II,        CE,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00000 - BOOT
-  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|MI|CE,  RO|AI,  TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00001 - LDA
-  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|MI|CE,  RO|BI,  EO|AI|FI,     TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00010 - ADD
-  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|MI|CE,  RO|BI,  EO|AI|SU|FI,  TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00011 - SUB
-  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|MI|CE,  AO|RI,  TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00100 - STA
-  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|AI|CE,  TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00101 - LDI
-  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|J,      TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00110 - JMP
-  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|JC|CE,  TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 00111 - JC
-  { FETCH_PC,     FETCH_INS,  FETCH_ADDR,   RO|JZ|CE,  TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01000 - JZ
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01001 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01010 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01011 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01100 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01101 - (NOP)
-  { FETCH_PC,     FETCH_INS,  AO|OI,        TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01110 - OUT
-  { FETCH_PC,     FETCH_INS,  HLT,          TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 01111 - HLT
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10000 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10001 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10010 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10011 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10100 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10101 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10110 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 10111 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11000 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11001 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11010 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11011 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11100 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11101 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           TR,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11110 - (NOP)
-  { FETCH_PC,     FETCH_INS,  TR,           CE,        TR,     TR,           TR, TR, TR, TR, TR, TR, TR, TR, TR, TR },   // 11111 - RUN
+  { CO|LI|MI|OI, LO|RI, CO|II, CE|TR,                                                }, // 00000 - BOOT
+  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|AI|TR,                                   }, // 00001 - LDA
+  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|BI|TR,                                   }, // 00010 - LDB
+  { GET_PC, GET_INS, GET_ADDR, RO|AI|CE|TR,                                          }, // 00011 - LDIA
+  { GET_PC, GET_INS, GET_ADDR, RO|BI|CE|TR,                                          }, // 00100 - LDIB
+  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|AI|TR,                                   }, // 00101 - LDPA
+  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|BI|TR,                                   }, // 00110 - LDPB
+  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, AO|RI|TR,                                   }, // 00111 - STA
+  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, BO|RI|TR,                                   }, // 01000 - STB
+  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|BI, EO|AI|FI|TR,                         }, // 01001 - ADD
+  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|BI, EO|AI|SU|FI|TR,                      }, // 01010 - SUB
+  { GET_PC, GET_INS, GET_ADDR, RO|BI|CE, EO|AI|FI|TR,                                }, // 01011 - ADDI
+  { GET_PC, GET_INS, GET_ADDR, RO|BI|CE, EO|AI|SU|FI|TR,                             }, // 01100 - SUBI
+  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|AI, GET_ADDR, RO|MI|CE, RO|BI, SU|FI|TR, }, // 01101 - CMP
+  { GET_PC, GET_INS, GET_ADDR, RO|J|TR,                                              }, // 01110 - JMP
+  { GET_PC, GET_INS, GET_ADDR, RO|JC|CE|TR,                                          }, // 01111 - JMPC
+  { GET_PC, GET_INS, GET_ADDR, RO|JZ|CE|TR,                                          }, // 10000 - JMPZ
+  { GET_PC, GET_INS, AO|OI|TR,                                                       }, // 10001 - OUTA
+  { GET_PC, GET_INS, BO|OI|TR,                                                       }, // 10010 - OUTB
+  { GET_PC, GET_INS, HLT,                                                            }, // 10011 - HLT
+  { GET_PC, GET_INS, TR,                                                             }, // 10100 - NOP
+  { GET_PC, GET_INS, TR,                                                             }, // 10101 - NOP
+  { GET_PC, GET_INS, TR,                                                             }, // 10110 - NOP
+  { GET_PC, GET_INS, TR,                                                             }, // 10111 - NOP
+  { GET_PC, GET_INS, TR,                                                             }, // 11000 - NOP
+  { GET_PC, GET_INS, TR,                                                             }, // 11001 - NOP
+  { GET_PC, GET_INS, TR,                                                             }, // 11010 - NOP
+  { GET_PC, GET_INS, TR,                                                             }, // 11011 - NOP
+  { GET_PC, GET_INS, TR,                                                             }, // 11100 - NOP
+  { GET_PC, GET_INS, TR,                                                             }, // 11101 - NOP
+  { GET_PC, GET_INS, TR,                                                             }, // 11110 - NOP
+  { GET_PC, GET_INS, TR, CE|TR,                                                      }, // 11111 - RUN
 };
 
 /*
@@ -118,7 +120,7 @@ void writeEEPROM(int address, byte data) {
   digitalWrite(WRITE_EN, LOW);
   delayMicroseconds(1);
   digitalWrite(WRITE_EN, HIGH);
-  delay(10);
+  delay(5);
 }
 
 
@@ -154,8 +156,8 @@ void setup() {
   // Program data bytes
   Serial.print("Programming EEPROM");
 
-  // Program the 8 high-order bits of microcode into the first 2048 bytes of EEPROM
-  for (int address = 0; address < 2048; address += 1) {
+  // Program the 8 high-order bits of microcode into the EEPROM
+  for (int address = 0; address < EEPROM_SIZE; address += 1) {
     int bit_select_3 = (address & 0b10000000000) >> 10;
     int bit_select_2 = (address & 0b01000000000) >> 9;
     int instruction  = (address & 0b00111110000) >> 4;
@@ -176,15 +178,12 @@ void setup() {
 
   Serial.println(" done");
 
-
   // Read and print out the contents of the EERPROM
   Serial.println("Reading EEPROM");
-  printContents(0, 2048);
+  printContents(0, EEPROM_SIZE);
 }
 
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
 }
 
