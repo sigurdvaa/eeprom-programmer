@@ -35,7 +35,7 @@ enum ins {
   HLT,
   NOP = 30,
   RUN = 31,
-}
+};
 
 
 const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
@@ -51,11 +51,11 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
     LDPA, 24, // addr ptr
     OUTA,
     SUB, 24, // addr ptr
-    JMPZ, 7,
+    JMPZ, 8,
     HLT,
     LDA, 24, // addr ptr
     ADDI, 1,
-    JC, 18, // jump to reset if address overflow
+    JMPC, 18, // jump to reset if address overflow
     STA, 24, // address
     JMP, 0, 
     LDIA, 25, // reset address to end of program
