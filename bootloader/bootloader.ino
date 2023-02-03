@@ -49,12 +49,12 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
   },
   {
     LDPA, 24, // addr ptr
-    OUTA,
     SUB, 24, // addr ptr
-    JMPZ, 8,
+    JMPZ, 7,
     HLT,
     LDA, 24, // addr ptr
     ADDI, 1,
+    OUTA,
     JMPC, 18, // jump to reset if address overflow
     STA, 24, // address
     JMP, 0, 
@@ -183,6 +183,7 @@ void setup() {
   // Read and print out the contents of the EERPROM
   Serial.println("Reading EEPROM");
   printContents(0, EEPROM_SIZE);
+  Serial.println("Write and read done");
 }
 
 

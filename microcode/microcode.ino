@@ -37,41 +37,40 @@
 
 const static uint32_t GET_PC = CO|MI;
 const static uint32_t GET_INS = RO|II|CE;
-const static uint32_t GET_ADDR = CO|MI;
 
 const static uint32_t ucode[32][16] PROGMEM = {
   { CO|LI|MI|OI, LO|RI, CO|II, CE|TR,                                                }, // 00000 - BOOT
-  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|AI|TR,                                   }, // 00001 - LDA
-  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|BI|TR,                                   }, // 00010 - LDB
-  { GET_PC, GET_INS, GET_ADDR, RO|AI|CE|TR,                                          }, // 00011 - LDIA
-  { GET_PC, GET_INS, GET_ADDR, RO|BI|CE|TR,                                          }, // 00100 - LDIB
-  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|AI|TR,                                   }, // 00101 - LDPA
-  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|BI|TR,                                   }, // 00110 - LDPB
-  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, AO|RI|TR,                                   }, // 00111 - STA
-  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, BO|RI|TR,                                   }, // 01000 - STB
-  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|BI, EO|AI|FI|TR,                         }, // 01001 - ADD
-  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|BI, EO|AI|SU|FI|TR,                      }, // 01010 - SUB
-  { GET_PC, GET_INS, GET_ADDR, RO|BI|CE, EO|AI|FI|TR,                                }, // 01011 - ADDI
-  { GET_PC, GET_INS, GET_ADDR, RO|BI|CE, EO|AI|SU|FI|TR,                             }, // 01100 - SUBI
-  { GET_PC, GET_INS, GET_ADDR, RO|MI|CE, RO|AI, GET_ADDR, RO|MI|CE, RO|BI, SU|FI|TR, }, // 01101 - CMP
-  { GET_PC, GET_INS, GET_ADDR, RO|J|TR,                                              }, // 01110 - JMP
-  { GET_PC, GET_INS, GET_ADDR, RO|JC|CE|TR,                                          }, // 01111 - JMPC
-  { GET_PC, GET_INS, GET_ADDR, RO|JZ|CE|TR,                                          }, // 10000 - JMPZ
-  { GET_PC, GET_INS, AO|OI|TR,                                                       }, // 10001 - OUTA
-  { GET_PC, GET_INS, BO|OI|TR,                                                       }, // 10010 - OUTB
-  { GET_PC, GET_INS, HLT,                                                            }, // 10011 - HLT
-  { GET_PC, GET_INS, TR,                                                             }, // 10100 - NOP
-  { GET_PC, GET_INS, TR,                                                             }, // 10101 - NOP
-  { GET_PC, GET_INS, TR,                                                             }, // 10110 - NOP
-  { GET_PC, GET_INS, TR,                                                             }, // 10111 - NOP
-  { GET_PC, GET_INS, TR,                                                             }, // 11000 - NOP
-  { GET_PC, GET_INS, TR,                                                             }, // 11001 - NOP
-  { GET_PC, GET_INS, TR,                                                             }, // 11010 - NOP
-  { GET_PC, GET_INS, TR,                                                             }, // 11011 - NOP
-  { GET_PC, GET_INS, TR,                                                             }, // 11100 - NOP
-  { GET_PC, GET_INS, TR,                                                             }, // 11101 - NOP
-  { GET_PC, GET_INS, TR,                                                             }, // 11110 - NOP
-  { GET_PC, GET_INS, TR, CE|TR,                                                      }, // 11111 - RUN
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|AI|CE|TR,                                   }, // 00001 - LDA
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|BI|CE|TR,                                   }, // 00010 - LDB
+  { GET_PC, GET_INS, GET_PC, RO|AI|CE|TR,                                          }, // 00011 - LDIA
+  { GET_PC, GET_INS, GET_PC, RO|BI|CE|TR,                                          }, // 00100 - LDIB
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|MI, RO|AI|CE|TR,                            }, // 00101 - LDPA
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|MI, RO|BI|CE|TR,                            }, // 00110 - LDPB
+  { GET_PC, GET_INS, GET_PC, RO|MI, AO|RI|CE|TR,                                   }, // 00111 - STA
+  { GET_PC, GET_INS, GET_PC, RO|MI, BO|RI|CE|TR,                                   }, // 01000 - STB
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|BI, EO|AI|FI|CE|TR,                         }, // 01001 - ADD
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|BI, EO|AI|FI|CE|TR|SU,                      }, // 01010 - SUB
+  { GET_PC, GET_INS, GET_PC, RO|BI, EO|AI|FI|CE|TR,                                }, // 01011 - ADDI
+  { GET_PC, GET_INS, GET_PC, RO|BI, EO|AI|SU|FI|CE|TR,                             }, // 01100 - SUBI
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|AI|CE, GET_PC, RO|MI, RO|BI, SU|FI|CE|TR,   }, // 01101 - CMP
+  { GET_PC, GET_INS, GET_PC, RO|J|TR,                                              }, // 01110 - JMP
+  { GET_PC, GET_INS, GET_PC, RO|JC|CE|TR,                                          }, // 01111 - JMPC
+  { GET_PC, GET_INS, GET_PC, RO|JZ|CE|TR,                                          }, // 10000 - JMPZ
+  { GET_PC, GET_INS, AO|OI|TR,                                                     }, // 10001 - OUTA
+  { GET_PC, GET_INS, BO|OI|TR,                                                     }, // 10010 - OUTB
+  { GET_PC, GET_INS, HLT,                                                          }, // 10011 - HLT
+  { GET_PC, GET_INS, TR,                                                           }, // 10100 - NOP
+  { GET_PC, GET_INS, TR,                                                           }, // 10101 - NOP
+  { GET_PC, GET_INS, TR,                                                           }, // 10110 - NOP
+  { GET_PC, GET_INS, TR,                                                           }, // 10111 - NOP
+  { GET_PC, GET_INS, TR,                                                           }, // 11000 - NOP
+  { GET_PC, GET_INS, TR,                                                           }, // 11001 - NOP
+  { GET_PC, GET_INS, TR,                                                           }, // 11010 - NOP
+  { GET_PC, GET_INS, TR,                                                           }, // 11011 - NOP
+  { GET_PC, GET_INS, TR,                                                           }, // 11100 - NOP
+  { GET_PC, GET_INS, TR,                                                           }, // 11101 - NOP
+  { GET_PC, GET_INS, TR,                                                           }, // 11110 - NOP
+  { GET_PC, GET_INS, TR, CE|TR,                                                    }, // 11111 - RUN
 };
 
 /*
