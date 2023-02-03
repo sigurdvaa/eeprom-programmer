@@ -55,11 +55,11 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
     LDA, 24, // addr ptr
     ADDI, 1,
     OUTA,
-    JMPC, 18, // jump to reset if address overflow
-    STA, 24, // address
+    JMPC, 18, // jump to reset if addr ptr overflow
+    STA, 24, // addr ptr
     JMP, 0, 
-    LDIA, 25, // reset address to end of program
-    STA, 24, // address
+    LDIA, 25, // reset addr ptr to end of program
+    STA, 24, // addr ptr
     JMP, 0,
     25, // addr ptr
     25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
@@ -80,7 +80,7 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
   {},
   {},
   {},
-  {},
+  { JMP, 0, },
 };
 
 
