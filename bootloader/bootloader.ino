@@ -1,7 +1,5 @@
 /**
- * This sketch programs the microcode EEPROMs for the 8-bit breadboard computer
- * It includes support for a flags register with carry and zero flags
- * See this video for more: https://youtu.be/Zg1NdPKoosU
+ * This sketch programs the bootloader EEPROM
  */
 #define SHIFT_DATA  2
 #define SHIFT_CLK   3
@@ -12,6 +10,10 @@
 #define EEPROM_SIZE 2048
 #define RAM_SIZE    256
 
+
+/*
+ * Instructions defined in the microcode
+ */
 enum ins {
   BOOT,
   LDA,
@@ -37,31 +39,47 @@ enum ins {
 };
 
 
+/*
+ * Define const variables used in programs
+ * VAR0_* for program 0, VAR1_* for program 1, and so on.
+ */
+#define VAR0_NUMBER   9 
+#define VAR1_ADDR_PTR 24
+#define VAR1_PRG_END  25
+
 const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
   {
-    LDA, 9,
+    /*
+     * Add 1
+     */
+    LDA, VAR0_NUMBER,
     ADDI, 1,
-    STA, 9,
+    STA, VAR0_NUMBER,
     OUTA,
-    JMP, 0,
-    0,  //  9
+    JMP, 0, // jump to start
+    0,  // VAR0_NUMBER
   },
   {
-    LDPA, 24, // addr ptr
-    SUB, 24, // addr ptr
-    JMPZ, 7,
-    HLT,
-    LDA, 24, // addr ptr
-    ADDI, 1,
+    /*
+     * Simple stability test. Check if expected value is in RAM location.
+     * Checks locations after the actual program, halts on unexpected values.
+     */
     OUTA,
-    JMPC, 18, // jump to reset if addr ptr overflow
-    STA, 24, // addr ptr
-    JMP, 0, 
-    LDIA, 25, // reset addr ptr to end of program
-    STA, 24, // addr ptr
-    JMP, 0,
-    25, // addr ptr
-    25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+    LDPA, VAR1_ADDR_PTR,
+    SUB, VAR1_ADDR_PTR,
+    JMPZ, 8, // skip HLT if RAM location has expected value (zero flag set)
+    HLT,
+    LDA, VAR1_ADDR_PTR,
+    ADDI, 1,
+    JMPC, 18, // jump to reset if VAR1_ADDR_PTR overflow (carry flag set)
+    STA, VAR1_ADDR_PTR,
+    JMP, 0, // jump to start
+    LDIA, VAR1_PRG_END, // reset VAR1_ADDR_PTR to VAR1_PRG_END
+    STA, VAR1_ADDR_PTR,
+    JMP, 0, // jump to start
+    VAR1_PRG_END, // VAR1_ADDR_PTR
+    VAR1_PRG_END, // VAR1_PRG_END
+    26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
     40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
     60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
     80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
