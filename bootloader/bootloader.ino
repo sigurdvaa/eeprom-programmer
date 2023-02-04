@@ -183,7 +183,7 @@ void setup() {
   // Read and print out the contents of the EERPROM
   Serial.println("Reading EEPROM");
   printContents(0, EEPROM_SIZE);
-  Serial.println("Write and read done");
+  Serial.println("Write and read bootloader done");
 }
 
 
