@@ -33,8 +33,7 @@ enum ins {
   OUTA,
   OUTB,
   HLT,
-  NOP = 30,
-  RUN = 31,
+  NOP = 31,
 };
 
 
