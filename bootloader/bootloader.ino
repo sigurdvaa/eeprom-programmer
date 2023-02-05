@@ -176,7 +176,7 @@ void printContents(int start, int length) {
 /*
  * Verify the contents of the EEPROM
  */
-void verifyContents(int start, int length) {
+bool verifyContents(int start, int length) {
   for (int address = start; address < length; address++) {
     int program = address >> 8;
     int instruction = address & 0b11111111;
@@ -220,7 +220,7 @@ void setup() {
   Serial.println(" done");
 
   // Verify the contents of the EEPROM
-  Serial.print("Reading EEPROM...");
+  Serial.print("Verifying EEPROM content...");
   if (verifyContents(0, EEPROM_SIZE)) {
     Serial.println(" ok");
   } else {
@@ -230,8 +230,6 @@ void setup() {
   // Read and print out the contents of the EERPROM
   // Serial.println("Reading EEPROM");
   // printContents(0, EEPROM_SIZE);
-
-  Serial.println("Write and read bootloader done");
 }
 
 
