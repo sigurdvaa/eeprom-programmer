@@ -1,7 +1,5 @@
 /**
  * This sketch programs the microcode EEPROMs for the 8-bit breadboard computer
- * It includes support for a flags register with carry and zero flags
- * See this video for more: https://youtu.be/Zg1NdPKoosU
  */
 #define SHIFT_DATA  2
 #define SHIFT_CLK   3
@@ -12,6 +10,10 @@
 #define EEPROM_SIZE 2048
 #define RAM_SIZE    256
 
+
+/*
+ * Control signals
+ */
 #define HLT 0b10000000000000000000000000000000  // Halt clock
 #define MI  0b01000000000000000000000000000000  // Memory address register in
 #define RI  0b00100000000000000000000000000000  // RAM data in
@@ -39,41 +41,39 @@
  * Define instruction microsteps
  * - TR is triggered on clock low
  */
-const static uint32_t GET_PC = CO|MI;
-const static uint32_t GET_INS = RO|II|CE;
 const static uint32_t ucode[32][16] PROGMEM = {
-  { CO|LI|MI|OI, LO|RI, CO|II|CE|TR,                                             }, // 00000 - BOOT
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|AI|CE|TR,                                 }, // 00001 - LDA
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|BI|CE|TR,                                 }, // 00010 - LDB
-  { GET_PC, GET_INS, GET_PC, RO|AI|CE|TR,                                        }, // 00011 - LDIA
-  { GET_PC, GET_INS, GET_PC, RO|BI|CE|TR,                                        }, // 00100 - LDIB
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|MI, RO|AI|CE|TR,                          }, // 00101 - LDPA
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|MI, RO|BI|CE|TR,                          }, // 00110 - LDPB
-  { GET_PC, GET_INS, GET_PC, RO|MI, AO|RI|CE|TR,                                 }, // 00111 - STA
-  { GET_PC, GET_INS, GET_PC, RO|MI, BO|RI|CE|TR,                                 }, // 01000 - STB
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|MI, AO|RI|CE|TR,                          }, // 01001 - STPA
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|MI, BO|RI|CE|TR,                          }, // 01010 - STPB
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|BI, EO|AI|FI|CE|TR,                       }, // 01011 - ADD
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|BI, EO|AI|FI|CE|TR|SU,                    }, // 01100 - SUB
-  { GET_PC, GET_INS, GET_PC, RO|BI, EO|AI|FI|CE|TR,                              }, // 01101 - ADDI
-  { GET_PC, GET_INS, GET_PC, RO|BI, EO|AI|SU|FI|CE|TR,                           }, // 01110 - SUBI
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|AI|CE, GET_PC, RO|MI, RO|BI, SU|FI|CE|TR, }, // 01111 - CMP
-  { GET_PC, GET_INS, GET_PC, RO|J|TR,                                            }, // 10000 - JMP
-  { GET_PC, GET_INS, GET_PC, RO|JC|CE|TR,                                        }, // 10001 - JMPC
-  { GET_PC, GET_INS, GET_PC, RO|JZ|CE|TR,                                        }, // 10010 - JMPZ
-  { GET_PC, GET_INS, AO|OI|TR,                                                   }, // 10011 - OUTA
-  { GET_PC, GET_INS, BO|OI|TR,                                                   }, // 10100 - OUTB
-  { GET_PC, GET_INS, HLT,                                                        }, // 10101 - HLT
-  { GET_PC, GET_INS, TR,                                                         }, // 10110 - NOP
-  { GET_PC, GET_INS, TR,                                                         }, // 10111 - NOP
-  { GET_PC, GET_INS, TR,                                                         }, // 11000 - NOP
-  { GET_PC, GET_INS, TR,                                                         }, // 11001 - NOP
-  { GET_PC, GET_INS, TR,                                                         }, // 11010 - NOP
-  { GET_PC, GET_INS, TR,                                                         }, // 11011 - NOP
-  { GET_PC, GET_INS, TR,                                                         }, // 11100 - NOP
-  { GET_PC, GET_INS, TR,                                                         }, // 11101 - NOP
-  { GET_PC, GET_INS, TR,                                                         }, // 11110 - NOP
-  { GET_PC, GET_INS, TR,                                                         }, // 11111 - NOP, BOOT end
+  { CO|LI|MI|OI, LO|RI, CO|II|CE|TR,                                           }, // 00000 - BOOT
+  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|AI|CE|TR,                                }, // 00001 - LDA
+  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|BI|CE|TR,                                }, // 00010 - LDB
+  { CO|MI, RO|II|CE, CO|MI, RO|AI|CE|TR,                                       }, // 00011 - LDIA
+  { CO|MI, RO|II|CE, CO|MI, RO|BI|CE|TR,                                       }, // 00100 - LDIB
+  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|MI, RO|AI|CE|TR,                         }, // 00101 - LDPA
+  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|MI, RO|BI|CE|TR,                         }, // 00110 - LDPB
+  { CO|MI, RO|II|CE, CO|MI, RO|MI, AO|RI|CE|TR,                                }, // 00111 - STA
+  { CO|MI, RO|II|CE, CO|MI, RO|MI, BO|RI|CE|TR,                                }, // 01000 - STB
+  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|MI, AO|RI|CE|TR,                         }, // 01001 - STPA
+  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|MI, BO|RI|CE|TR,                         }, // 01010 - STPB
+  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|BI, EO|AI|FI|CE|TR,                      }, // 01011 - ADD
+  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|BI, EO|AI|FI|CE|TR|SU,                   }, // 01100 - SUB
+  { CO|MI, RO|II|CE, CO|MI, RO|BI, EO|AI|FI|CE|TR,                             }, // 01101 - ADDI
+  { CO|MI, RO|II|CE, CO|MI, RO|BI, EO|AI|SU|FI|CE|TR,                          }, // 01110 - SUBI
+  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|AI|CE, CO|MI, RO|MI, RO|BI, SU|FI|CE|TR, }, // 01111 - CMP
+  { CO|MI, RO|II|CE, CO|MI, RO|J|TR,                                           }, // 10000 - JMP
+  { CO|MI, RO|II|CE, CO|MI, RO|JC|CE|TR,                                       }, // 10001 - JMPC
+  { CO|MI, RO|II|CE, CO|MI, RO|JZ|CE|TR,                                       }, // 10010 - JMPZ
+  { CO|MI, RO|II|CE, AO|OI|TR,                                                 }, // 10011 - OUTA
+  { CO|MI, RO|II|CE, BO|OI|TR,                                                 }, // 10100 - OUTB
+  { CO|MI, RO|II|CE, HLT,                                                      }, // 10101 - HLT
+  { CO|MI, RO|II|CE, TR,                                                       }, // 10110 - NOP
+  { CO|MI, RO|II|CE, TR,                                                       }, // 10111 - NOP
+  { CO|MI, RO|II|CE, TR,                                                       }, // 11000 - NOP
+  { CO|MI, RO|II|CE, TR,                                                       }, // 11001 - NOP
+  { CO|MI, RO|II|CE, TR,                                                       }, // 11010 - NOP
+  { CO|MI, RO|II|CE, TR,                                                       }, // 11011 - NOP
+  { CO|MI, RO|II|CE, TR,                                                       }, // 11100 - NOP
+  { CO|MI, RO|II|CE, TR,                                                       }, // 11101 - NOP
+  { CO|MI, RO|II|CE, TR,                                                       }, // 11110 - NOP
+  { CO|MI, RO|II|CE, TR,                                                       }, // 11111 - NOP, BOOT end
 };
 
 
@@ -123,7 +123,7 @@ void writeEEPROM(int address, byte data) {
   digitalWrite(WRITE_EN, LOW);
   delayMicroseconds(1);
   digitalWrite(WRITE_EN, HIGH);
-  delay(10);
+  delay(5);
 }
 
 
