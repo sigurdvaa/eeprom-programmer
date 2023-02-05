@@ -51,19 +51,19 @@ const static uint32_t ucode[32][16] PROGMEM = {
   { GET_PC, GET_INS, GET_PC, RO|MI, RO|MI, RO|BI|CE|TR,                          }, // 00110 - LDPB
   { GET_PC, GET_INS, GET_PC, RO|MI, AO|RI|CE|TR,                                 }, // 00111 - STA
   { GET_PC, GET_INS, GET_PC, RO|MI, BO|RI|CE|TR,                                 }, // 01000 - STB
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|BI, EO|AI|FI|CE|TR,                       }, // 01001 - ADD
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|BI, EO|AI|FI|CE|TR|SU,                    }, // 01010 - SUB
-  { GET_PC, GET_INS, GET_PC, RO|BI, EO|AI|FI|CE|TR,                              }, // 01011 - ADDI
-  { GET_PC, GET_INS, GET_PC, RO|BI, EO|AI|SU|FI|CE|TR,                           }, // 01100 - SUBI
-  { GET_PC, GET_INS, GET_PC, RO|MI, RO|AI|CE, GET_PC, RO|MI, RO|BI, SU|FI|CE|TR, }, // 01101 - CMP
-  { GET_PC, GET_INS, GET_PC, RO|J|TR,                                            }, // 01110 - JMP
-  { GET_PC, GET_INS, GET_PC, RO|JC|CE|TR,                                        }, // 01111 - JMPC
-  { GET_PC, GET_INS, GET_PC, RO|JZ|CE|TR,                                        }, // 10000 - JMPZ
-  { GET_PC, GET_INS, AO|OI|TR,                                                   }, // 10001 - OUTA
-  { GET_PC, GET_INS, BO|OI|TR,                                                   }, // 10010 - OUTB
-  { GET_PC, GET_INS, HLT,                                                        }, // 10011 - HLT
-  { GET_PC, GET_INS, TR,                                                         }, // 10100 - NOP
-  { GET_PC, GET_INS, TR,                                                         }, // 10101 - NOP
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|MI, AO|RI|CE|TR,                          }, // 01001 - STPA
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|MI, BO|RI|CE|TR,                          }, // 01010 - STPB
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|BI, EO|AI|FI|CE|TR,                       }, // 01011 - ADD
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|BI, EO|AI|FI|CE|TR|SU,                    }, // 01100 - SUB
+  { GET_PC, GET_INS, GET_PC, RO|BI, EO|AI|FI|CE|TR,                              }, // 01101 - ADDI
+  { GET_PC, GET_INS, GET_PC, RO|BI, EO|AI|SU|FI|CE|TR,                           }, // 01110 - SUBI
+  { GET_PC, GET_INS, GET_PC, RO|MI, RO|AI|CE, GET_PC, RO|MI, RO|BI, SU|FI|CE|TR, }, // 01111 - CMP
+  { GET_PC, GET_INS, GET_PC, RO|J|TR,                                            }, // 10000 - JMP
+  { GET_PC, GET_INS, GET_PC, RO|JC|CE|TR,                                        }, // 10001 - JMPC
+  { GET_PC, GET_INS, GET_PC, RO|JZ|CE|TR,                                        }, // 10010 - JMPZ
+  { GET_PC, GET_INS, AO|OI|TR,                                                   }, // 10011 - OUTA
+  { GET_PC, GET_INS, BO|OI|TR,                                                   }, // 10100 - OUTB
+  { GET_PC, GET_INS, HLT,                                                        }, // 10101 - HLT
   { GET_PC, GET_INS, TR,                                                         }, // 10110 - NOP
   { GET_PC, GET_INS, TR,                                                         }, // 10111 - NOP
   { GET_PC, GET_INS, TR,                                                         }, // 11000 - NOP
@@ -73,7 +73,7 @@ const static uint32_t ucode[32][16] PROGMEM = {
   { GET_PC, GET_INS, TR,                                                         }, // 11100 - NOP
   { GET_PC, GET_INS, TR,                                                         }, // 11101 - NOP
   { GET_PC, GET_INS, TR,                                                         }, // 11110 - NOP
-  { GET_PC, GET_INS, TR,                                                         }, // 11111 - NOP
+  { GET_PC, GET_INS, TR,                                                         }, // 11111 - NOP, BOOT end
 };
 
 
@@ -123,7 +123,7 @@ void writeEEPROM(int address, byte data) {
   digitalWrite(WRITE_EN, LOW);
   delayMicroseconds(1);
   digitalWrite(WRITE_EN, HIGH);
-  delay(5);
+  delay(10);
 }
 
 

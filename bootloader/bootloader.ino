@@ -24,6 +24,8 @@ enum ins {
   LDPB,
   STA,
   STB,
+  STPA,
+  STPB,
   ADD,
   SUB,
   ADDI,
@@ -39,46 +41,45 @@ enum ins {
 };
 
 
-/*
- * Define const variables used in programs
- * VAR0_* for program 0, VAR1_* for program 1, and so on.
- */
-#define VAR0_NUMBER   9 
-#define VAR1_ADDR_PTR 24
-#define VAR1_PRG_END  25
-
 const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
+  #define PRG0_NUMBER 9
   {
     /*
      * Add 1
      */
-    LDA, VAR0_NUMBER,
+    LDA, PRG0_NUMBER,
     ADDI, 1,
-    STA, VAR0_NUMBER,
+    STA, PRG0_NUMBER,
     OUTA,
     JMP, 0, // jump to start
-    0,  // VAR0_NUMBER
+    0,  // PRG0_NUMBER
   },
+
+  #define PRG1_ADDR_PTR 24
+  #define PRG1_PRG_END  25
   {
     /*
-     * Simple stability test. Check if expected value is in RAM location.
+     * Simple memtest
+     * Check if expected value is in RAM location.
      * Checks locations after the actual program, halts on unexpected values.
      */
     OUTA,
-    LDPA, VAR1_ADDR_PTR,
-    SUB, VAR1_ADDR_PTR,
+    LDPA, PRG1_ADDR_PTR,
+    SUB, PRG1_ADDR_PTR,
     JMPZ, 8, // skip HLT if RAM location has expected value (zero flag set)
-    HLT,
-    LDA, VAR1_ADDR_PTR,
+      HLT,
+    LDA, PRG1_ADDR_PTR,
     ADDI, 1,
-    JMPC, 18, // jump to reset if VAR1_ADDR_PTR overflow (carry flag set)
-    STA, VAR1_ADDR_PTR,
+    JMPC, 18, // jump to reset if PRG1_ADDR_PTR overflow (carry flag set)
+      STA, PRG1_ADDR_PTR,
+      JMP, 0, // jump to start
+    LDIA, PRG1_PRG_END, // reset PRG1_ADDR_PTR to PRG1_PRG_END
+    STA, PRG1_ADDR_PTR,
     JMP, 0, // jump to start
-    LDIA, VAR1_PRG_END, // reset VAR1_ADDR_PTR to VAR1_PRG_END
-    STA, VAR1_ADDR_PTR,
-    JMP, 0, // jump to start
-    VAR1_PRG_END, // VAR1_ADDR_PTR
-    VAR1_PRG_END, // VAR1_PRG_END
+
+    // vars
+    PRG1_PRG_END, // PRG1_ADDR_PTR
+    PRG1_PRG_END, // PRG1_PRG_END
     26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
     40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
     60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
@@ -92,7 +93,42 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
     220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
     240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
   },
-  {},
+
+  #define PRG2_ADDR_PTR   36
+  #define PRG2_PATTERN    37
+  #define PRG2_COMPLIMENT 38
+  #define PRG2_PRG_LEN    39
+  {
+    /*
+     * Memtest
+     * For each RAM location after the program, check if pattern match and write the compliment. HLT if not match.
+     * To keep the program as short as possible, we'll use the default init value as pattern, 0b00000000, with the compliment 0b11111111.
+     */
+    OUTA,
+    LDPA, PRG2_ADDR_PTR,
+    SUB, PRG2_PATTERN,
+    JMPZ, 8, // skip HLT if memory match pattern
+      HLT,
+    LDA, PRG2_COMPLIMENT, // addr 8
+    STPA, PRG2_ADDR_PTR,
+    LDA, PRG2_ADDR_PTR,
+    ADDI, 1,
+    JMPC, 22, // end reached, goto reset
+      STA, PRG2_ADDR_PTR,
+      JMP, 0,
+    LDIA, PRG2_PRG_LEN, // reset (addr 22): set PRG2_ADDR_PTR to PRG2_PRG_LEN, flip pattern and compliment, goto start
+    STA, PRG2_ADDR_PTR,
+    LDA, PRG2_PATTERN,
+    LDB, PRG2_COMPLIMENT,
+    STA, PRG2_COMPLIMENT,
+    STB, PRG2_PATTERN,
+    JMP, 0,
+  
+    // vars
+    PRG2_PRG_LEN, // PRG2_ADDR_PTR
+    0, // PRG2_PATTERN
+    255, // PRG2_COMPLIMENT
+  },
   {},
   {},
   {},
@@ -147,7 +183,7 @@ void writeEEPROM(int address, byte data) {
   digitalWrite(WRITE_EN, LOW);
   delayMicroseconds(1);
   digitalWrite(WRITE_EN, HIGH);
-  delay(5);
+  delay(10);
 }
 
 
