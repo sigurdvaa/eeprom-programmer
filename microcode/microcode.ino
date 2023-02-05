@@ -147,6 +147,38 @@ void printContents(int start, int length) {
 }
 
 
+/*
+ * Verify the contents of the EEPROM
+ */
+void verifyContents(int start, int length) {
+  for (int address = start; address < length; address++) {
+
+    int bit_select_3 = (address & 0b10000000000) >> 10;
+    int bit_select_2 = (address & 0b01000000000) >> 9;
+    int instruction  = (address & 0b00111110000) >> 4;
+    int step         = (address & 0b00000001111);
+
+    uint8_t ucode_byte;
+
+    if (bit_select_3) {
+      byte = pgm_read_dword(&ucode[instruction][step]) >> 8;
+    } else if (bit_select_2) {
+      byte = pgm_read_dword(&ucode[instruction][step]) >> 16;
+    } else {
+      byte = pgm_read_dword(&ucode[instruction][step]) >> 24;
+    }
+
+    uint8_t eeprom_byte = readEEPROM(address);
+
+    if (ucode_byte != eeprom_byte) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
 void setup() {
   // put your setup code here, to run once:
   pinMode(SHIFT_DATA, OUTPUT);
@@ -181,9 +213,17 @@ void setup() {
 
   Serial.println(" done");
 
+  // Verify the contents of the EEPROM
+  Serial.print("Reading EEPROM...");
+  if (verifyContents(0, EEPROM_SIZE)) {
+    Serial.println(" ok");
+  } else {
+    Serial.println(" error");
+  }
+
   // Read and print out the contents of the EERPROM
-  Serial.println("Reading EEPROM");
-  printContents(0, EEPROM_SIZE);
+  // Serial.println("Reading EEPROM");
+  // printContents(0, EEPROM_SIZE);
 
   Serial.println("Write and read microcode done");
 }

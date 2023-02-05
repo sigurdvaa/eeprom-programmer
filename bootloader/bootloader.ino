@@ -173,6 +173,26 @@ void printContents(int start, int length) {
 }
 
 
+/*
+ * Verify the contents of the EEPROM
+ */
+void verifyContents(int start, int length) {
+  for (int address = start; address < length; address++) {
+    int program = address >> 8;
+    int instruction = address & 0b11111111;
+
+    uint8_t program_byte = pgm_read_byte(&programs[program][instruction]);
+    uint8_t eeprom_byte = readEEPROM(address);
+
+    if (program_byte != eeprom_byte) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
 void setup() {
   // put your setup code here, to run once:
   pinMode(SHIFT_DATA, OUTPUT);
@@ -199,9 +219,17 @@ void setup() {
 
   Serial.println(" done");
 
+  // Verify the contents of the EEPROM
+  Serial.print("Reading EEPROM...");
+  if (verifyContents(0, EEPROM_SIZE)) {
+    Serial.println(" ok");
+  } else {
+    Serial.println(" error");
+  }
+
   // Read and print out the contents of the EERPROM
-  Serial.println("Reading EEPROM");
-  printContents(0, EEPROM_SIZE);
+  // Serial.println("Reading EEPROM");
+  // printContents(0, EEPROM_SIZE);
 
   Serial.println("Write and read bootloader done");
 }
