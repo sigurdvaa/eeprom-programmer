@@ -59,22 +59,22 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
 
   #define PRG1_ADDR_PTR   36
   #define PRG1_PATTERN    37
-  #define PRG1_COMPLIMENT 38
+  #define PRG1_COMPLEMENT 38
   #define PRG1_PRG_LEN    39
   {
     /*
      * Memtest
-     * For each RAM location after the program, check if pattern match and write the compliment.
+     * For each RAM location after the program, check if pattern match and write the complement.
      * HLT if not match.
      * To keep the program as short as possible,
-     * we'll use the default init value as pattern, 0b00000000, with the compliment 0b11111111.
+     * we'll use the default init value as pattern, 0b00000000, with the complement 0b11111111.
      */
     OUTA,
     LDPA, PRG1_ADDR_PTR,
     SUB, PRG1_PATTERN,
     JMPZ, 8, // skip HLT if memory match pattern
       HLT,
-    LDA, PRG1_COMPLIMENT, // addr 8
+    LDA, PRG1_COMPLEMENT, // addr 8
     STPA, PRG1_ADDR_PTR,
     LDA, PRG1_ADDR_PTR,
     ADDI, 1,
@@ -83,16 +83,16 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
       JMP, 0,
     LDIA, PRG1_PRG_LEN, // reset (addr 22): set PRG1_ADDR_PTR to PRG1_PRG_LEN
     STA, PRG1_ADDR_PTR,
-    LDA, PRG1_PATTERN, // flip pattern and compliment
-    LDB, PRG1_COMPLIMENT,
-    STA, PRG1_COMPLIMENT,
+    LDA, PRG1_PATTERN, // flip pattern and complement
+    LDB, PRG1_COMPLEMENT,
+    STA, PRG1_COMPLEMENT,
     STB, PRG1_PATTERN,
     JMP, 0, // goto start
   
     // vars
     PRG1_PRG_LEN, // PRG1_ADDR_PTR
     0,            // PRG1_PATTERN
-    255,          // PRG1_COMPLIMENT
+    255,          // PRG1_COMPLEMENT
   },
   {},
   {},
