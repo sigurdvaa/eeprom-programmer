@@ -39,10 +39,10 @@
 
 /*
  * Define instruction microsteps
- * - TR is triggered on clock low
+ * - II and TR are triggered on clock low edge
  */
 const static uint32_t ucode[32][16] PROGMEM = {
-  { CO|LI|MI|OI, LO|RI, CO|II|CE|TR,                                           }, // 00000 - BOOT
+  { CO|LI|MI|OI, LO|RI, CO|II, CE|TR,                                          }, // 00000 - BOOT
   { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|AI|CE|TR,                                }, // 00001 - LDA
   { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|BI|CE|TR,                                }, // 00010 - LDB
   { CO|MI, RO|II|CE, CO|MI, RO|AI|CE|TR,                                       }, // 00011 - LDIA
@@ -73,7 +73,7 @@ const static uint32_t ucode[32][16] PROGMEM = {
   { CO|MI, RO|II|CE, TR,                                                       }, // 11100 - NOP
   { CO|MI, RO|II|CE, TR,                                                       }, // 11101 - NOP
   { CO|MI, RO|II|CE, TR,                                                       }, // 11110 - NOP
-  { CO|MI, RO|II|CE, TR,                                                       }, // 11111 - NOP, BOOT end
+  { CO|MI, RO|II|CE, TR, TR,                                                   }, // 11111 - NOP, BOOT end
 };
 
 
