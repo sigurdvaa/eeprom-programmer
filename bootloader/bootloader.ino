@@ -203,7 +203,7 @@ void setup() {
   Serial.begin(57600);
 
   // Program data bytes
-  Serial.print("Programming EEPROM");
+  Serial.print("Programming bootloader EEPROM");
 
   // Write the programs into the EEPROM
   for (int address = 0; address < EEPROM_SIZE; address += 1) {
@@ -220,7 +220,7 @@ void setup() {
   Serial.println(" done");
 
   // Verify the contents of the EEPROM
-  Serial.print("Verifying EEPROM content...");
+  Serial.print("Verifying bootloader EEPROM content...");
   if (verifyContents(0, EEPROM_SIZE)) {
     Serial.println(" ok");
   } else {

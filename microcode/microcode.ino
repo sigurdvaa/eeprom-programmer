@@ -39,7 +39,8 @@
 
 /*
  * Define instruction microsteps
- * - II and TR are triggered on clock low edge
+ * Most control signals are triggered on clock rising edge.
+ * Exceptions are II, TR, and microstep counter, which trigger on inverted clock.
  */
 const static uint32_t ucode[32][16] PROGMEM = {
   { CO|LI|MI|OI, LO|RI, CO|II, CE|TR,                                          }, // 00000 - BOOT
@@ -73,7 +74,7 @@ const static uint32_t ucode[32][16] PROGMEM = {
   { CO|MI, RO|II|CE, TR,                                                       }, // 11100 - NOP
   { CO|MI, RO|II|CE, TR,                                                       }, // 11101 - NOP
   { CO|MI, RO|II|CE, TR,                                                       }, // 11110 - NOP
-  { CO|MI, RO|II|CE, TR, TR,                                                   }, // 11111 - NOP, BOOT end
+  { CO|MI, RO|II|CE, TR, CE|TR,                                                }, // 11111 - NOP, BOOT end
 };
 
 
@@ -189,7 +190,7 @@ void setup() {
   Serial.begin(57600);
 
   // Program data bytes
-  Serial.print("Programming EEPROM");
+  Serial.print("Programming microcode EEPROM");
 
   // Program the 8 high-order bits of microcode into the EEPROM
   for (int address = 0; address < EEPROM_SIZE; address += 1) {
@@ -214,7 +215,7 @@ void setup() {
   Serial.println(" done");
 
   // Verify the contents of the EEPROM
-  Serial.print("Verifying EEPROM content...");
+  Serial.print("Verifying microcode EEPROM content...");
   if (verifyContents(0, EEPROM_SIZE)) {
     Serial.println(" ok");
   } else {
