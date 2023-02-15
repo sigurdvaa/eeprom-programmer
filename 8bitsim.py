@@ -58,6 +58,12 @@ def ins_OUTA(regs, mem, flags):
     regs["O"] = regs["A"]
 
 
+def ins_OUTI(regs, mem, flags):
+    value = mem[regs["PC"]]
+    inc(regs, "PC", 1)
+    regs["O"] = value
+
+
 def ins_JMP(regs, mem, flags):
     regs["PC"] = mem[regs["PC"]]
 
@@ -85,28 +91,29 @@ def run_prog(prog):
         sleep(0.1)
 
 
-add_one = [
-    "LDA", 9,
-    "ADDI", 1,
-    "STA", 9,
+add_NUM = 9
+add = [
     "OUTA",
+    "ADDI", 1,
     "JMP", 0,
-    0,
 ]
 
+fib_TMP = 21
+fib_OLD = 22
 fib = [
     "OUTA",
-    "STA", 19,
-    "ADD", 20,
-    "LDB", 19,
-    "STB", 20,
+    "STA", fib_TMP,
+    "ADD", fib_OLD,
+    "LDB", fib_TMP,
+    "STB", fib_OLD,
     "JMPC", 13,
-    "JMP", 0,
+        "JMP", 0,
+    "OUTI", 0,
     "LDIA", 1,
-    "STA", 20,
+    "STA", fib_OLD,
     "JMP", 0,
-    0,
-    1,
+    0, # fib_TMP
+    1, # fib_OLD
 ]
 
 run_prog(fib)

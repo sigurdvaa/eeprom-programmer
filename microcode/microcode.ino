@@ -64,8 +64,8 @@ const static uint32_t ucode[32][16] PROGMEM = {
   { CO|MI, RO|II|CE, CO|MI, RO|JZ|CE|TR,                                       }, // 10010 - JMPZ
   { CO|MI, RO|II|CE, AO|OI|TR,                                                 }, // 10011 - OUTA
   { CO|MI, RO|II|CE, BO|OI|TR,                                                 }, // 10100 - OUTB
-  { CO|MI, RO|II|CE, HLT,                                                      }, // 10101 - HLT
-  { CO|MI, RO|II|CE, TR,                                                       }, // 10110 - NOP
+  { CO|MI, RO|II|CE, CO|MI, RO|OI|CE|TR,                                       }, // 10101 - OUTI
+  { CO|MI, RO|II|CE, HLT,                                                      }, // 10110 - HLT
   { CO|MI, RO|II|CE, TR,                                                       }, // 10111 - NOP
   { CO|MI, RO|II|CE, TR,                                                       }, // 11000 - NOP
   { CO|MI, RO|II|CE, TR,                                                       }, // 11001 - NOP

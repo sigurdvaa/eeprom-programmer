@@ -36,25 +36,20 @@ enum ins {
   JMPZ,
   OUTA,
   OUTB,
+  OUTI,
   HLT,
   NOP = 31,
 };
 
 
 const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
-  #define PRG0_NUMBER 9
   {
     /*
-     * Add 1
+     * Add
      */
-    LDA, PRG0_NUMBER,
+    OUTA
     ADDI, 1,
-    STA, PRG0_NUMBER,
-    OUTA,
-    JMP, 0, // jump to start
-
-    // vars
-    0, // PRG0_NUMBER
+    JMP, 0,
   },
 
   #define PRG1_ADDR_PTR   36
@@ -95,8 +90,8 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
     255,          // PRG1_COMPLEMENT
   },
 
-  #define PRG2_TMP 19
-  #define PRG2_OLD 20
+  #define PRG2_TMP 21
+  #define PRG2_OLD 22
   {
     /*
      * Fibonacci sequence
@@ -108,6 +103,7 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
     STB, PRG2_OLD,
     JMPC, 13, // overflow, reset sequence
       JMP, 0,
+    OUTI, 0,
     LDIA, 1,
     STA, PRG2_OLD,
     JMP, 0,
