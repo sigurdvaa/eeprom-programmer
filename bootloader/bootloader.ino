@@ -94,7 +94,26 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
     0,            // PRG1_PATTERN
     255,          // PRG1_COMPLEMENT
   },
-  {},
+
+  #define PRG2_TMP 19
+  #define PRG2_OLD 20
+  {
+    /*
+     * Fibonacci sequence
+     */
+    OUTA,
+    STA, PRG2_TMP,
+    ADD, PRG2_OLD,
+    LDB, PRG2_TMP,
+    STB, PRG2_OLD,
+    JMPC, 13, // overflow, reset sequence
+      JMP, 0,
+    LDIA, 1,
+    STA, PRG2_OLD,
+    JMP, 0,
+    0, // PRG2_TMP
+    1, // PRG2_OLD
+  },
   {},
   {},
   {},
