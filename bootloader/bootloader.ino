@@ -47,7 +47,7 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
     /*
      * Add
      */
-    OUTA
+    OUTA,
     ADDI, 1,
     JMP, 0,
   },
