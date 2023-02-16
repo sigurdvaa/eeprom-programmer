@@ -25,6 +25,12 @@ def ins_LDIA(regs, mem, flags):
     regs["A"] = value
 
 
+def ins_LDIB(regs, mem, flags):
+    value = mem[regs["PC"]]
+    inc(regs, "PC", 1)
+    regs["B"] = value
+
+
 def ins_STA(regs, mem, flags):
     addr = mem[regs["PC"]]
     inc(regs, "PC", 1)
@@ -87,8 +93,8 @@ def run_prog(prog):
         ins = mem[regs["PC"]]
         inc(regs, "PC", 1)
         Globals["ins_" + ins](regs, mem, flags)
-        print(*[f"{k}: {v}" for k,v in regs.items()], sep="\t")
-        sleep(0.1)
+        print(*[f"{k}: {v:>08b}" for k,v in regs.items()], regs['O'], f'{(regs["A"] + regs["B"]) & 255:>08b}', sep="\t")
+        sleep(0.05)
 
 
 add_NUM = 9
@@ -116,4 +122,24 @@ fib = [
     1, # fib_OLD
 ]
 
-run_prog(fib)
+pat = [
+    "LDIA", 1,   "LDIB", 1,   "OUTI", 1,
+    "LDIA", 2,   "LDIB", 2,   "OUTI", 2,
+    "LDIA", 4,   "LDIB", 4,   "OUTI", 4,
+    "LDIA", 8,   "LDIB", 8,   "OUTI", 8,
+    "LDIA", 16,  "LDIB", 16,  "OUTI", 16,
+    "LDIA", 32,  "LDIB", 32,  "OUTI", 32,
+    "LDIA", 64,  "LDIB", 64,  "OUTI", 64,
+    "LDIA", 128, "LDIB", 128, "OUTI", 128,
+    "LDIA", 128, "LDIB", 128, "OUTI", 128,
+    "LDIA", 64,  "LDIB", 64,  "OUTI", 64,
+    "LDIA", 32,  "LDIB", 32,  "OUTI", 32,
+    "LDIA", 16,  "LDIB", 16,  "OUTI", 16,
+    "LDIA", 8,   "LDIB", 8,   "OUTI", 8,
+    "LDIA", 4,   "LDIB", 4,   "OUTI", 4,
+    "LDIA", 2,   "LDIB", 2,   "OUTI", 2,
+    "LDIA", 1,   "LDIB", 1,   "OUTI", 1,
+    "JMP", 0,    
+]
+
+run_prog(pat)

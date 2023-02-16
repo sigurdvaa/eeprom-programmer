@@ -110,7 +110,29 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
     0, // PRG2_TMP
     1, // PRG2_OLD
   },
-  {},
+
+  {
+    /*
+     * Symmetric Pattern
+     */
+    LDIA, 1,   LDIB, 1,   OUTI, 1,
+    LDIA, 2,   LDIB, 2,   OUTI, 2,
+    LDIA, 4,   LDIB, 4,   OUTI, 4,
+    LDIA, 8,   LDIB, 8,   OUTI, 8,
+    LDIA, 16,  LDIB, 16,  OUTI, 16,
+    LDIA, 32,  LDIB, 32,  OUTI, 32,
+    LDIA, 64,  LDIB, 64,  OUTI, 64,
+    LDIA, 128, LDIB, 128, OUTI, 128,
+    LDIA, 128, LDIB, 128, OUTI, 128,
+    LDIA, 64,  LDIB, 64,  OUTI, 64,
+    LDIA, 32,  LDIB, 32,  OUTI, 32,
+    LDIA, 16,  LDIB, 16,  OUTI, 16,
+    LDIA, 8,   LDIB, 8,   OUTI, 8,
+    LDIA, 4,   LDIB, 4,   OUTI, 4,
+    LDIA, 2,   LDIB, 2,   OUTI, 2,
+    LDIA, 1,   LDIB, 1,   OUTI, 1,
+    JMP, 0,   
+  },
   {},
   {},
   {},
