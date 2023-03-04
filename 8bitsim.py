@@ -69,7 +69,7 @@ def ins_SUB(regs, mem, flags):
     addr = mem[regs["PC"]]
     inc(regs, "PC", 1)
     value = mem[addr]
-    flags["C"] = regs["A"] - value <= 0
+    flags["C"] = regs["A"] - value < 0
     flags["Z"] = regs["A"] - value == 0
     inc(regs, "A", -value)
 
