@@ -35,6 +35,8 @@
 #define BO  0b00000000000000000010000000000000  // B register out
 #define LI  0b00000000000000000001000000000000  // Bootloader address register in
 #define LO  0b00000000000000000000100000000000  // Bootloader data out
+#define SO  0b00000000000000000000100000000000  // Settings register out
+#define SI  0b00000000000000000000100000000000  // Settings register in
 
 
 /*
@@ -43,38 +45,38 @@
  * Exceptions are II, TR, and microstep counter, which trigger on inverted clock.
  */
 const static uint32_t ucode[32][16] PROGMEM = {
-  { CO|LI|MI|OI, LO|RI, CO|II, CE|TR,                                          }, // 00000 - BOOT
-  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|AI|CE|TR,                                }, // 00001 - LDA
-  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|BI|CE|TR,                                }, // 00010 - LDB
-  { CO|MI, RO|II|CE, CO|MI, RO|AI|CE|TR,                                       }, // 00011 - LDIA
-  { CO|MI, RO|II|CE, CO|MI, RO|BI|CE|TR,                                       }, // 00100 - LDIB
-  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|MI, RO|AI|CE|TR,                         }, // 00101 - LDPA
-  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|MI, RO|BI|CE|TR,                         }, // 00110 - LDPB
-  { CO|MI, RO|II|CE, CO|MI, RO|MI, AO|RI|CE|TR,                                }, // 00111 - STA
-  { CO|MI, RO|II|CE, CO|MI, RO|MI, BO|RI|CE|TR,                                }, // 01000 - STB
-  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|MI, AO|RI|CE|TR,                         }, // 01001 - STPA
-  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|MI, BO|RI|CE|TR,                         }, // 01010 - STPB
-  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|BI, EO|AI|FI|CE|TR,                      }, // 01011 - ADD
-  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|BI, EO|AI|FI|CE|TR|SU,                   }, // 01100 - SUB
-  { CO|MI, RO|II|CE, CO|MI, RO|BI, EO|AI|FI|CE|TR,                             }, // 01101 - ADDI
-  { CO|MI, RO|II|CE, CO|MI, RO|BI, EO|AI|SU|FI|CE|TR,                          }, // 01110 - SUBI
-  { CO|MI, RO|II|CE, CO|MI, RO|MI, RO|AI|CE, CO|MI, RO|MI, RO|BI, SU|FI|CE|TR, }, // 01111 - CMP
-  { CO|MI, RO|II|CE, CO|MI, RO|J|TR,                                           }, // 10000 - JMP
-  { CO|MI, RO|II|CE, CO|MI, RO|JC|CE|TR,                                       }, // 10001 - JMPC
-  { CO|MI, RO|II|CE, CO|MI, RO|JZ|CE|TR,                                       }, // 10010 - JMPZ
-  { CO|MI, RO|II|CE, AO|OI|TR,                                                 }, // 10011 - OUTA
-  { CO|MI, RO|II|CE, BO|OI|TR,                                                 }, // 10100 - OUTB
-  { CO|MI, RO|II|CE, CO|MI, RO|OI|CE|TR,                                       }, // 10101 - OUTI
-  { CO|MI, RO|II|CE, HLT,                                                      }, // 10110 - HLT
-  { CO|MI, RO|II|CE, TR,                                                       }, // 10111 - NOP
-  { CO|MI, RO|II|CE, TR,                                                       }, // 11000 - NOP
-  { CO|MI, RO|II|CE, TR,                                                       }, // 11001 - NOP
-  { CO|MI, RO|II|CE, TR,                                                       }, // 11010 - NOP
-  { CO|MI, RO|II|CE, TR,                                                       }, // 11011 - NOP
-  { CO|MI, RO|II|CE, TR,                                                       }, // 11100 - NOP
-  { CO|MI, RO|II|CE, TR,                                                       }, // 11101 - NOP
-  { CO|MI, RO|II|CE, TR,                                                       }, // 11110 - NOP
-  { CO|MI, RO|II|CE, TR, CE|TR,                                                }, // 11111 - NOP, BOOT end
+  { CO|LI|MI|OI, LO|RI, CO|II, CE|TR,                                          }, // BOOT
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|AI|TR,                                }, // LDA
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|BI|TR,                                }, // LDB
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|SI|TR,                                }, // LDS
+  { CO|MI, RO|II|CE, CO|MI, RO|AI|CE|TR,                                       }, // LDIA
+  { CO|MI, RO|II|CE, CO|MI, RO|BI|CE|TR,                                       }, // LDIB
+  { CO|MI, RO|II|CE, CO|MI, RO|SI|CE|TR,                                       }, // LDIS
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|MI, RO|AI|TR,                         }, // LDPA
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|MI, RO|BI|TR,                         }, // LDPB
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, AO|RI|TR,                                }, // STA
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, BO|RI|TR,                                }, // STB
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, SO|RI|TR,                                }, // STS
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|MI, AO|RI|TR,                         }, // STPA
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|MI, BO|RI|TR,                         }, // STPB
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|BI, EO|AI|FI|TR,                      }, // ADD
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|BI, EO|AI|FI|TR|SU,                   }, // SUB
+  { CO|MI, RO|II|CE, CO|MI, RO|BI|CE, EO|AI|FI|TR,                             }, // ADDI
+  { CO|MI, RO|II|CE, CO|MI, RO|BI|CE, EO|AI|SU|FI|TR,                          }, // SUBI
+  { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|AI, CO|MI, RO|MI|CE, RO|BI, SU|FI|TR, }, // CMP
+  { CO|MI, RO|II|CE, CO|MI, RO|J|TR,                                           }, // JMP
+  { CO|MI, RO|II|CE, CO|MI, RO|JC|CE|TR,                                       }, // JMPC
+  { CO|MI, RO|II|CE, CO|MI, RO|JZ|CE|TR,                                       }, // JMPZ
+  { CO|MI, RO|II|CE, AO|OI|TR,                                                 }, // OUTA
+  { CO|MI, RO|II|CE, BO|OI|TR,                                                 }, // OUTB
+  { CO|MI, RO|II|CE, CO|MI, RO|OI|CE|TR,                                       }, // OUTI
+  { CO|MI, RO|II|CE, SO|AI, CO|MI, RO|BI|CE, EO|SI|TR,                         }, // SET
+  { CO|MI, RO|II|CE, SO|AI, CO|MI, RO|BI|CE, EO|SI|TR|SU,                      }, // UNSET
+  { CO|MI, RO|II|CE, HLT,                                                      }, // HLT
+  { CO|MI, RO|II|CE, TR,                                                       }, // NOP
+  { CO|MI, RO|II|CE, TR,                                                       }, // NOP
+  { CO|MI, RO|II|CE, TR,                                                       }, // NOP
+  { CO|MI, RO|II|CE, TR, CE|TR,                                                }, // NOP, BOOT end
 };
 
 
