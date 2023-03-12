@@ -57,6 +57,30 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
     JMP, 0,
   },
 
+  {
+    /*
+     * Add - two's complement
+     */
+    SET, 0b0001,
+    OUTA,
+    ADDI, 1,
+    JMP, 2,
+  },
+
+  {
+    /*
+     * Wave
+     */
+    OUTA,
+    ADDI, 1,
+    JMPC, 8,
+    JMP, 0,
+    OUTA,
+    SUBI, 1,
+    JMPZ, 0,
+    JMP, 7,
+  },
+
   #define PRG1_ADDR_PTR   36
   #define PRG1_PATTERN    37
   #define PRG1_COMPLEMENT 38
@@ -138,8 +162,6 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
     LDIA, 1,   LDIB, 1,   OUTI, 1,
     JMP, 0,   
   },
-  {},
-  {},
   {},
   { JMP, 0, },
 };
