@@ -69,7 +69,7 @@ def ins_SUB(regs, mem, flags):
     addr = mem[regs["PC"]]
     inc(regs, "PC", 1)
     value = mem[addr]
-    flags["C"] = regs["A"] - value < 0
+    flags["C"] = True
     flags["Z"] = regs["A"] - value == 0
     inc(regs, "A", -value)
 
@@ -102,7 +102,7 @@ def ins_JMPZ(regs, mem, flags):
         regs["PC"] = value
 
 
-def run_prog(prog):
+def run_prog(prog, sleep_time: int = 0):
     mem = prog
     mem.extend([0 for x in range(256 - len(prog))])
     regs = {"PC": 0, "A": 0, "B": 0, "O": 0}
@@ -116,7 +116,8 @@ def run_prog(prog):
         inc(regs, "PC", 1)
         Globals["ins_" + ins](regs, mem, flags)
         print(*[f"{k}: {v:>08b}" for k,v in regs.items()], f"O: {regs['O']}", f'S: {(regs["A"] + regs["B"]) & 255:>08b}', mem[24], sep="\t")
-        #sleep(0.05)
+        if sleep_time:
+            sleep(sleep_time)
 
 
 add_NUM = 9
@@ -164,10 +165,14 @@ pat = [
     "JMP", 0,    
 ]
 
+
+# for n+1 
+  # check if n is prime
+
 prime = [
     "LDA", 25,
-    "OUTA", # 2
-    "LDA", 24,
+    "OUTA",
+    "LDA", 24, # 3
     "ADD", 23,
     "STA", 24,
     "LDA", 25,
@@ -180,7 +185,7 @@ prime = [
     "HLT",
     1, # 23
     1, # 24
-    233, # 25
+    6, # 25
 ]
 
 run_prog(prime)

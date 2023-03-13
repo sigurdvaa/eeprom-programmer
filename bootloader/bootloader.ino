@@ -98,19 +98,19 @@ const static uint8_t programs[EEPROM_SIZE / RAM_SIZE][RAM_SIZE] PROGMEM = {
     SUB, PRG1_PATTERN,
     JMPZ, 8, // skip HLT if memory match pattern
       HLT,
-    LDA, PRG1_COMPLEMENT, // addr 8
+    LDA, PRG1_COMPLEMENT,
     STPA, PRG1_ADDR_PTR,
     LDA, PRG1_ADDR_PTR,
     ADDI, 1,
     JMPC, 22, // end reached, goto reset
       STA, PRG1_ADDR_PTR,
       JMP, 0,
-    LDIA, PRG1_PRG_LEN, // reset (addr 22): set PRG1_ADDR_PTR to PRG1_PRG_LEN
-    STA, PRG1_ADDR_PTR,
-    LDA, PRG1_PATTERN, // flip pattern and complement
+    LDA, PRG1_PATTERN, // reset: flip pattern and complement
     LDB, PRG1_COMPLEMENT,
     STA, PRG1_COMPLEMENT,
     STB, PRG1_PATTERN,
+    LDIA, PRG1_PRG_LEN, // set PRG1_ADDR_PTR to PRG1_PRG_LEN
+    STA, PRG1_ADDR_PTR,
     JMP, 0, // goto start
   
     // vars
