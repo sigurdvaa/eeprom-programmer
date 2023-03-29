@@ -52,26 +52,29 @@ def ins_ADD(regs, mem, flags):
     addr = mem[regs["PC"]]
     inc(regs, "PC", 1)
     value = mem[addr]
+    regs["B"] = value
     flags["C"] = regs["A"] + value > 255
-    flags["Z"] = regs["A"] + value == 0
     inc(regs, "A", value)
+    flags["Z"] = regs["A"] == 0
 
 
 def ins_ADDI(regs, mem, flags):
     value = mem[regs["PC"]]
+    regs["B"] = value
     inc(regs, "PC", 1)
     flags["C"] = regs["A"] + value > 255
-    flags["Z"] = regs["A"] + value == 0
     inc(regs, "A", value)
+    flags["Z"] = regs["A"] == 0
 
 
 def ins_SUB(regs, mem, flags):
     addr = mem[regs["PC"]]
     inc(regs, "PC", 1)
     value = mem[addr]
-    flags["C"] = True
-    flags["Z"] = regs["A"] - value == 0
+    regs["B"] = value
+    flags["C"] = regs["A"] - value > -1
     inc(regs, "A", -value)
+    flags["Z"] = regs["A"] == 0
 
 
 def ins_OUTA(regs, mem, flags):
@@ -95,6 +98,15 @@ def ins_JMPC(regs, mem, flags):
         regs["PC"] = value
 
 
+def ins_JMPNC(regs, mem, flags):
+    value = mem[regs["PC"]]
+    inc(regs, "PC", 1)
+    old = regs["PC"]
+    regs["PC"] = value
+    if flags["C"]:
+        regs["PC"] = old
+
+
 def ins_JMPZ(regs, mem, flags):
     value = mem[regs["PC"]]
     inc(regs, "PC", 1)
@@ -115,7 +127,7 @@ def run_prog(prog, sleep_time: int = 0):
         ins = mem[regs["PC"]]
         inc(regs, "PC", 1)
         Globals["ins_" + ins](regs, mem, flags)
-        print(*[f"{k}: {v:>08b}" for k,v in regs.items()], f"O: {regs['O']}", f'S: {(regs["A"] + regs["B"]) & 255:>08b}', mem[24], sep="\t")
+        print(*[f"{k}: {v:>08b}" for k,v in regs.items()], f"O: {regs['O']}", f'A+B: {(regs["A"] + regs["B"]) & 255:>08b}', mem[24], sep="\t")
         if sleep_time:
             sleep(sleep_time)
 
@@ -178,14 +190,14 @@ prime = [
     "LDA", 25,
     "SUB", 24, # 11
     "JMPZ", 19,
-        "JMPC", 3,
+        "JMPNC", 3,
             "JMP", 11,
     "LDA", 24, # 19
     "OUTA",
     "HLT",
     1, # 23
     1, # 24
-    6, # 25
+    23, # 25
 ]
 
 run_prog(prime)
