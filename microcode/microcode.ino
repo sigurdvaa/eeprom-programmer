@@ -67,14 +67,14 @@ const static uint32_t ucode[32][16] PROGMEM = {
   { CO|MI, RO|II|CE, CO|MI, RO|J|TR,                                           }, // 10011 - JMP
   { CO|MI, RO|II|CE, CO|MI, RO|JC|CE|TR,                                       }, // 10100 - JMPC
   { CO|MI, RO|II|CE, CO|MI, RO|JZ|CE|TR,                                       }, // 10101 - JMPZ
-  { CO|MI, RO|II|CE, AO|OI|TR,                                                 }, // 10110 - OUTA
-  { CO|MI, RO|II|CE, BO|OI|TR,                                                 }, // 10111 - OUTB
-  { CO|MI, RO|II|CE, CO|MI, RO|OI|CE|TR,                                       }, // 11000 - OUTI
-  { CO|MI, RO|II|CE, SO|AI, CO|MI, RO|BI|CE, EO|SI|TR,                         }, // 11001 - SET
-  { CO|MI, RO|II|CE, SO|AI, CO|MI, RO|BI|CE, EO|SI|TR|SU,                      }, // 11010 - UNSET
-  { CO|MI, RO|II|CE, HLT,                                                      }, // 11011 - HLT
-  { CO|MI, RO|II|CE, TR,                                                       }, // 11100 - NOP
-  { CO|MI, RO|II|CE, TR,                                                       }, // 11101 - NOP
+  { CO|MI, RO|II|CE, CO|MI, CE, CO|BI, RO|J, BO|JC|TR,                         }, // 10110 - JMPNC
+  { CO|MI, RO|II|CE, CO|MI, CE, CO|BI, RO|J, BO|JZ|TR,                         }, // 10111 - JMPNZ
+  { CO|MI, RO|II|CE, AO|OI|TR,                                                 }, // 11000 - OUTA
+  { CO|MI, RO|II|CE, BO|OI|TR,                                                 }, // 11001 - OUTB
+  { CO|MI, RO|II|CE, CO|MI, RO|OI|CE|TR,                                       }, // 11010 - OUTI
+  { CO|MI, RO|II|CE, SO|AI, CO|MI, RO|BI|CE, EO|SI|TR,                         }, // 11011 - SET
+  { CO|MI, RO|II|CE, SO|AI, CO|MI, RO|BI|CE, EO|SI|TR|SU,                      }, // 11100 - UNSET
+  { CO|MI, RO|II|CE, HLT,                                                      }, // 11101 - HLT
   { CO|MI, RO|II|CE, TR,                                                       }, // 11110 - NOP
   { CO|MI, RO|II|CE, TR, CE|TR,                                                }, // 11111 - NOP, BOOT end
 };

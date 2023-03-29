@@ -37,6 +37,8 @@ enum ins {
   JMP,
   JMPC,
   JMPZ,
+  JMPNC,
+  JMPNZ,
   OUTA,
   OUTB,
   OUTI,
