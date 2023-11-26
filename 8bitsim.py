@@ -1,8 +1,26 @@
 from time import sleep
 from typing import Union, Optional
+from enum import IntEnum, auto
 
-Prog = list[Union[str, int]]
-# TODO: create enum of INS and replace Prog with list[int]
+
+class Ins(IntEnum):
+    HLT = auto()
+    LDA = auto()
+    LDB = auto()
+    LDIA = auto()
+    LDIB = auto()
+    STA = auto()
+    STB = auto()
+    ADD = auto()
+    ADDI = auto()
+    SUB = auto()
+    SUBI = auto()
+    OUTA = auto()
+    OUTI = auto()
+    JMP = auto()
+    JMPC = auto()
+    JMPNC = auto()
+    JMPZ = auto()
 
 
 def inc(regs: dict[str, int], reg: str, amount: int):
@@ -11,11 +29,11 @@ def inc(regs: dict[str, int], reg: str, amount: int):
     regs[reg] = value & 255
 
 
-def ins_HLT(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_HLT(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     return True
 
 
-def ins_LDA(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_LDA(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     addr = mem[regs["PC"]]
     assert isinstance(addr, int)
     value = mem[addr]
@@ -24,7 +42,7 @@ def ins_LDA(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     regs["A"] = value
 
 
-def ins_LDB(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_LDB(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     addr = mem[regs["PC"]]
     assert isinstance(addr, int)
     value = mem[addr]
@@ -33,35 +51,35 @@ def ins_LDB(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     regs["B"] = value
 
 
-def ins_LDIA(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_LDIA(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     value = mem[regs["PC"]]
     inc(regs, "PC", 1)
     assert isinstance(value, int)
     regs["A"] = value
 
 
-def ins_LDIB(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_LDIB(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     value = mem[regs["PC"]]
     inc(regs, "PC", 1)
     assert isinstance(value, int)
     regs["B"] = value
 
 
-def ins_STA(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_STA(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     addr = mem[regs["PC"]]
     assert isinstance(addr, int)
     inc(regs, "PC", 1)
     mem[addr] = regs["A"]
 
 
-def ins_STB(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_STB(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     addr = mem[regs["PC"]]
     assert isinstance(addr, int)
     inc(regs, "PC", 1)
     mem[addr] = regs["B"]
 
 
-def ins_ADD(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_ADD(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     addr = mem[regs["PC"]]
     inc(regs, "PC", 1)
     assert isinstance(addr, int)
@@ -73,7 +91,7 @@ def ins_ADD(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     flags["Z"] = regs["A"] == 0
 
 
-def ins_ADDI(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_ADDI(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     value = mem[regs["PC"]]
     assert isinstance(value, int)
     regs["B"] = value
@@ -83,7 +101,7 @@ def ins_ADDI(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     flags["Z"] = regs["A"] == 0
 
 
-def ins_SUB(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_SUB(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     addr = mem[regs["PC"]]
     inc(regs, "PC", 1)
     assert isinstance(addr, int)
@@ -95,24 +113,24 @@ def ins_SUB(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     flags["Z"] = regs["A"] == 0
 
 
-def ins_OUTA(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_OUTA(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     regs["O"] = regs["A"]
 
 
-def ins_OUTI(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_OUTI(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     value = mem[regs["PC"]]
     inc(regs, "PC", 1)
     assert isinstance(value, int)
     regs["O"] = value
 
 
-def ins_JMP(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_JMP(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     value = mem[regs["PC"]]
     assert isinstance(value, int)
     regs["PC"] = value
 
 
-def ins_JMPC(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_JMPC(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     value = mem[regs["PC"]]
     inc(regs, "PC", 1)
     if flags["C"]:
@@ -120,7 +138,7 @@ def ins_JMPC(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
         regs["PC"] = value
 
 
-def ins_JMPNC(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_JMPNC(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     value = mem[regs["PC"]]
     inc(regs, "PC", 1)
     old = regs["PC"]
@@ -130,7 +148,7 @@ def ins_JMPNC(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
         regs["PC"] = old
 
 
-def ins_JMPZ(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+def ins_JMPZ(regs: dict[str, int], mem: list[int], flags: dict[str, bool]):
     value = mem[regs["PC"]]
     inc(regs, "PC", 1)
     if flags["Z"]:
@@ -138,7 +156,7 @@ def ins_JMPZ(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
         regs["PC"] = value
 
 
-def run_prog(prog: Prog, sleep_time: int = 0):
+def run_prog(prog: list[int], sleep_time: int = 0):
     Globals = globals()
 
     mem = prog
@@ -214,9 +232,9 @@ pat: list[Union[str, int]] = [
 # for n+1 
   # check if n is prime
 # fmt: off
-prime: list[Union[str, int]] = [
-    "LDA", 25,
-    "OUTA",
+prime = [
+    Ins.LDA, 25,
+    Ins.OUTA,
     "LDA", 24, # 3
     "ADD", 23,
     "STA", 24,
