@@ -1,26 +1,31 @@
 from time import sleep
 from typing import Callable
-from enum import IntEnum, auto
+from enum import IntEnum
 
 
-class Ins(IntEnum):
-    HLT = auto()
-    LDA = auto()
-    LDB = auto()
-    LDIA = auto()
-    LDIB = auto()
-    STA = auto()
-    STB = auto()
-    ADD = auto()
-    ADDI = auto()
-    SUB = auto()
-    SUBI = auto()
-    OUTA = auto()
-    OUTI = auto()
-    JMP = auto()
-    JMPC = auto()
-    JMPNC = auto()
-    JMPZ = auto()
+Ins = IntEnum(
+    "Ins",
+    [
+        "HLT",
+        "LDA",
+        "LDB",
+        "LDIA",
+        "LDIB",
+        "STA",
+        "STB",
+        "ADD",
+        "ADDI",
+        "SUB",
+        "SUBI",
+        "OUTA",
+        "OUTI",
+        "JMP",
+        "JMPC",
+        "JMPNC",
+        "JMPZ",
+    ],
+    start=0,
+)
 
 
 class Computer:
@@ -163,7 +168,7 @@ class Computer:
         if self.flags["Z"]:
             self.regs["PC"] = value
 
-    def run(self, sleep_time: int = 0):
+    def run(self, sleep_time: float = 0.0):
         while not self.halt:
             curr_ins = self.mem[self.regs["PC"]]
             self.inc("PC", 1)
@@ -180,17 +185,15 @@ class Computer:
 
 
 # fmt: off
-add_NUM = 9
 add = [
     Ins.OUTA,
     Ins.ADDI, 1,
     Ins.JMP, 0,
 ]
 
-# fmt: off
 fib_TMP = 21
 fib_OLD = 22
-fib = [
+fibonacci = [
     Ins.OUTA,
     Ins.STA, fib_TMP,
     Ins.ADD, fib_OLD,
@@ -206,31 +209,28 @@ fib = [
     1, # fib_OLD
 ]
 
-# fmt: off
-pat = [
-    "LDIA", 1,   "LDIB", 1,   "OUTI", 1,
-    "LDIA", 2,   "LDIB", 2,   "OUTI", 2,
-    "LDIA", 4,   "LDIB", 4,   "OUTI", 4,
-    "LDIA", 8,   "LDIB", 8,   "OUTI", 8,
-    "LDIA", 16,  "LDIB", 16,  "OUTI", 16,
-    "LDIA", 32,  "LDIB", 32,  "OUTI", 32,
-    "LDIA", 64,  "LDIB", 64,  "OUTI", 64,
-    "LDIA", 128, "LDIB", 128, "OUTI", 128,
-    "LDIA", 128, "LDIB", 128, "OUTI", 128,
-    "LDIA", 64,  "LDIB", 64,  "OUTI", 64,
-    "LDIA", 32,  "LDIB", 32,  "OUTI", 32,
-    "LDIA", 16,  "LDIB", 16,  "OUTI", 16,
-    "LDIA", 8,   "LDIB", 8,   "OUTI", 8,
-    "LDIA", 4,   "LDIB", 4,   "OUTI", 4,
-    "LDIA", 2,   "LDIB", 2,   "OUTI", 2,
-    "LDIA", 1,   "LDIB", 1,   "OUTI", 1,
-    "JMP", 0,    
+pattern = [
+    Ins.LDIA, 1,   Ins.LDIB, 1,   Ins.OUTI, 1,
+    Ins.LDIA, 2,   Ins.LDIB, 2,   Ins.OUTI, 2,
+    Ins.LDIA, 4,   Ins.LDIB, 4,   Ins.OUTI, 4,
+    Ins.LDIA, 8,   Ins.LDIB, 8,   Ins.OUTI, 8,
+    Ins.LDIA, 16,  Ins.LDIB, 16,  Ins.OUTI, 16,
+    Ins.LDIA, 32,  Ins.LDIB, 32,  Ins.OUTI, 32,
+    Ins.LDIA, 64,  Ins.LDIB, 64,  Ins.OUTI, 64,
+    Ins.LDIA, 128, Ins.LDIB, 128, Ins.OUTI, 128,
+    Ins.LDIA, 128, Ins.LDIB, 128, Ins.OUTI, 128,
+    Ins.LDIA, 64,  Ins.LDIB, 64,  Ins.OUTI, 64,
+    Ins.LDIA, 32,  Ins.LDIB, 32,  Ins.OUTI, 32,
+    Ins.LDIA, 16,  Ins.LDIB, 16,  Ins.OUTI, 16,
+    Ins.LDIA, 8,   Ins.LDIB, 8,   Ins.OUTI, 8,
+    Ins.LDIA, 4,   Ins.LDIB, 4,   Ins.OUTI, 4,
+    Ins.LDIA, 2,   Ins.LDIB, 2,   Ins.OUTI, 2,
+    Ins.LDIA, 1,   Ins.LDIB, 1,   Ins.OUTI, 1,
+    Ins.JMP, 0,    
 ]
-
 
 # for n+1 
   # check if n is prime
-# fmt: off
 prime = [
     Ins.LDA, 25,
     Ins.OUTA,
@@ -249,7 +249,7 @@ prime = [
     1, # 24
     23, # 25
 ]
+# fmt: on
 
-
-computer = Computer(fib)
-computer.run()
+computer = Computer(fibonacci)
+computer.run(0.01)
