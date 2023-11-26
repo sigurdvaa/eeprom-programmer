@@ -62,7 +62,7 @@ const static uint32_t ucode[32][16] PROGMEM = {
   { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|BI, EO|AI|FI|TR,                      }, // 01110 - ADD
   { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|BI, EO|AI|FI|TR|SU,                   }, // 01111 - SUB
   { CO|MI, RO|II|CE, CO|MI, RO|BI|CE, EO|AI|FI|TR,                             }, // 10000 - ADDI
-  { CO|MI, RO|II|CE, CO|MI, RO|BI|CE, EO|AI|SU|FI|TR,                          }, // 10001 - SUBI
+  { CO|MI, RO|II|CE, CO|MI, RO|BI|CE, EO|AI|FI|TR|SU,                          }, // 10001 - SUBI
   { CO|MI, RO|II|CE, CO|MI, RO|MI|CE, RO|AI, CO|MI, RO|MI|CE, RO|BI, SU|FI|TR, }, // 10010 - CMP
   { CO|MI, RO|II|CE, CO|MI, RO|J|TR,                                           }, // 10011 - JMP
   { CO|MI, RO|II|CE, CO|MI, RO|JC|CE|TR,                                       }, // 10100 - JMPC
