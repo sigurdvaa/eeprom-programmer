@@ -1,65 +1,81 @@
 from time import sleep
+from typing import Union, Optional
+
+Prog = list[Union[str, int]]
+# TODO: create enum of INS and replace Prog with list[int]
 
 
-def inc(regs, reg, amount):
+def inc(regs: dict[str, int], reg: str, amount: int):
     """Ensure we only have 8 bit values"""
     value = regs[reg] + amount
     regs[reg] = value & 255
 
 
-def ins_HLT(regs, mem, flags):
-    global halt
-    halt = True
+def ins_HLT(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+    return True
 
 
-def ins_LDA(regs, mem, flags):
+def ins_LDA(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     addr = mem[regs["PC"]]
-    inc(regs, "PC", 1)
-    regs["A"] = mem[addr]
-
-
-def ins_LDB(regs, mem, flags):
-    addr = mem[regs["PC"]]
-    inc(regs, "PC", 1)
-    regs["B"] = mem[addr]
-
-
-def ins_LDIA(regs, mem, flags):
-    value = mem[regs["PC"]]
+    assert isinstance(addr, int)
+    value = mem[addr]
+    assert isinstance(value, int)
     inc(regs, "PC", 1)
     regs["A"] = value
 
 
-def ins_LDIB(regs, mem, flags):
-    value = mem[regs["PC"]]
+def ins_LDB(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+    addr = mem[regs["PC"]]
+    assert isinstance(addr, int)
+    value = mem[addr]
+    assert isinstance(value, int)
     inc(regs, "PC", 1)
     regs["B"] = value
 
 
-def ins_STA(regs, mem, flags):
+def ins_LDIA(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+    value = mem[regs["PC"]]
+    inc(regs, "PC", 1)
+    assert isinstance(value, int)
+    regs["A"] = value
+
+
+def ins_LDIB(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+    value = mem[regs["PC"]]
+    inc(regs, "PC", 1)
+    assert isinstance(value, int)
+    regs["B"] = value
+
+
+def ins_STA(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     addr = mem[regs["PC"]]
+    assert isinstance(addr, int)
     inc(regs, "PC", 1)
     mem[addr] = regs["A"]
 
 
-def ins_STB(regs, mem, flags):
+def ins_STB(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     addr = mem[regs["PC"]]
+    assert isinstance(addr, int)
     inc(regs, "PC", 1)
     mem[addr] = regs["B"]
 
 
-def ins_ADD(regs, mem, flags):
+def ins_ADD(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     addr = mem[regs["PC"]]
     inc(regs, "PC", 1)
+    assert isinstance(addr, int)
     value = mem[addr]
+    assert isinstance(value, int)
     regs["B"] = value
     flags["C"] = regs["A"] + value > 255
     inc(regs, "A", value)
     flags["Z"] = regs["A"] == 0
 
 
-def ins_ADDI(regs, mem, flags):
+def ins_ADDI(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     value = mem[regs["PC"]]
+    assert isinstance(value, int)
     regs["B"] = value
     inc(regs, "PC", 1)
     flags["C"] = regs["A"] + value > 255
@@ -67,81 +83,97 @@ def ins_ADDI(regs, mem, flags):
     flags["Z"] = regs["A"] == 0
 
 
-def ins_SUB(regs, mem, flags):
+def ins_SUB(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     addr = mem[regs["PC"]]
     inc(regs, "PC", 1)
+    assert isinstance(addr, int)
     value = mem[addr]
+    assert isinstance(value, int)
     regs["B"] = value
     flags["C"] = regs["A"] - value > -1
     inc(regs, "A", -value)
     flags["Z"] = regs["A"] == 0
 
 
-def ins_OUTA(regs, mem, flags):
+def ins_OUTA(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     regs["O"] = regs["A"]
 
 
-def ins_OUTI(regs, mem, flags):
+def ins_OUTI(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     value = mem[regs["PC"]]
     inc(regs, "PC", 1)
+    assert isinstance(value, int)
     regs["O"] = value
 
 
-def ins_JMP(regs, mem, flags):
-    regs["PC"] = mem[regs["PC"]]
+def ins_JMP(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
+    value = mem[regs["PC"]]
+    assert isinstance(value, int)
+    regs["PC"] = value
 
 
-def ins_JMPC(regs, mem, flags):
+def ins_JMPC(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     value = mem[regs["PC"]]
     inc(regs, "PC", 1)
     if flags["C"]:
+        assert isinstance(value, int)
         regs["PC"] = value
 
 
-def ins_JMPNC(regs, mem, flags):
+def ins_JMPNC(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     value = mem[regs["PC"]]
     inc(regs, "PC", 1)
     old = regs["PC"]
+    assert isinstance(value, int)
     regs["PC"] = value
     if flags["C"]:
         regs["PC"] = old
 
 
-def ins_JMPZ(regs, mem, flags):
+def ins_JMPZ(regs: dict[str, int], mem: Prog, flags: dict[str, bool]):
     value = mem[regs["PC"]]
     inc(regs, "PC", 1)
     if flags["Z"]:
+        assert isinstance(value, int)
         regs["PC"] = value
 
 
-def run_prog(prog, sleep_time: int = 0):
+def run_prog(prog: Prog, sleep_time: int = 0):
+    Globals = globals()
+
     mem = prog
     mem.extend([0 for x in range(256 - len(prog))])
     regs = {"PC": 0, "A": 0, "B": 0, "O": 0}
     flags = {"C": False, "Z": False}
-    Globals = globals()
-    global halt
-    halt = False
+    halt: Optional[bool] = None
 
-    while not halt:
+    while halt is None:
         ins = mem[regs["PC"]]
         inc(regs, "PC", 1)
-        Globals["ins_" + ins](regs, mem, flags)
-        print(*[f"{k}: {v:>08b}" for k,v in regs.items()], f"O: {regs['O']}", f'A+B: {(regs["A"] + regs["B"]) & 255:>08b}', mem[24], sep="\t")
+        halt = Globals["ins_" + str(ins)](regs, mem, flags)
+        print(
+            *[f"{k}: {v:>08b}" for k, v in regs.items()],
+            f"O: {regs['O']}",
+            f'A+B: {(regs["A"] + regs["B"]) & 255:>08b}',
+            mem[24],
+            sep="\t",
+        )
         if sleep_time:
             sleep(sleep_time)
 
 
+# fmt: off
 add_NUM = 9
-add = [
+add: list[Union[str, int]] = [
     "OUTA",
     "ADDI", 1,
     "JMP", 0,
 ]
 
+# fmt: off
 fib_TMP = 21
 fib_OLD = 22
-fib = [
+fib: list[Union[str, int]] = [
     "OUTA",
     "STA", fib_TMP,
     "ADD", fib_OLD,
@@ -157,7 +189,8 @@ fib = [
     1, # fib_OLD
 ]
 
-pat = [
+# fmt: off
+pat: list[Union[str, int]] = [
     "LDIA", 1,   "LDIB", 1,   "OUTI", 1,
     "LDIA", 2,   "LDIB", 2,   "OUTI", 2,
     "LDIA", 4,   "LDIB", 4,   "OUTI", 4,
@@ -180,8 +213,8 @@ pat = [
 
 # for n+1 
   # check if n is prime
-
-prime = [
+# fmt: off
+prime: list[Union[str, int]] = [
     "LDA", 25,
     "OUTA",
     "LDA", 24, # 3
@@ -200,4 +233,6 @@ prime = [
     23, # 25
 ]
 
+
+halt = False
 run_prog(prime)
