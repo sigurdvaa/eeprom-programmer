@@ -1,5 +1,13 @@
 # Arduino EEPROM programmer
 
+Fork of Ben Eater's project.
+
+- Updated the microcode to work with my version of the 8-bit computer with 256 instruction and a settings register
+- Added code for flashing programs to a bootloader
+- Added a simple simulator to make it easier to develop programs
+
+---
+
 Copyright 2017 Ben Eater
 
 This code and schematic are [MIT licensed](http://en.wikipedia.org/wiki/MIT_License).
